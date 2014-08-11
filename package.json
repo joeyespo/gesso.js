@@ -21,5 +21,9 @@
     "url": "http://github.com/joeyespo/gessojs.git"
   },
   "dependencies": {
+    "chalk": "^0.5.1",
+    "liftoff": "^0.12.0",
+    "minimist": "^0.2.0",
+    "tildify": "^0.2.0"
   }
 }
