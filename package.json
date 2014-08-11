@@ -1,0 +1,25 @@
+{
+  "name": "gesso",
+  "version": "0.1.0",
+  "author": "Joe Esposito <joe@joeyespo.com>",
+  "description": "Gesso builds packages that interact with HTML canvases. Use the power of npm, a built-in server for testing and demoing, all without writing any HTML. To deploy, simply load the resulting JS file on a page containing a canvas.",
+  "homepage": "http://gessojs.com",
+  "url": "http://github.com/joeyespo/gessojs.git",
+  "license": "ISC",
+  "bin": {
+    "gesso": "bin/gesso.js"
+  },
+  "engines": {
+    "node": ">= 0.10.0"
+  },
+  "main": "gesso",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "http://github.com/joeyespo/gessojs.git"
+  },
+  "dependencies": {
+  }
+}
