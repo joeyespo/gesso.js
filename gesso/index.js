@@ -1,7 +1,6 @@
-function run() {
-  console.log('Gesso');
-}
+var command = require('./command');
+
 
 module.exports = {
-  run: run
+  run: command.run
 };
