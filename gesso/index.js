@@ -2,5 +2,6 @@ var command = require('./command');
 
 
 module.exports = {
-  run: command.run
+  globalMain: command.globalMain,
+  main: command.main
 };
