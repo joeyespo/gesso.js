@@ -1,3 +1,4 @@
+var path = require('path');
 var nunjucks = require('nunjucks');
 var express = require('express');
 var settings = require('./settings');
@@ -5,9 +6,9 @@ var settings = require('./settings');
 
 // Express application
 var app = express();
-app.use(express.static(__dirname + '/public'));
+app.use(express.static(path.join(__dirname, 'public')));
 // Configure extension
-nunjucks.configure('views');
+nunjucks.configure(path.join(__dirname, 'views'));
 
 
 // Routes
