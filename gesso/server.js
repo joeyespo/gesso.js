@@ -13,7 +13,7 @@ nunjucks.configure(path.join(__dirname, 'views'));
 
 // Routes
 app.get('/', function(req, res) {
-  res.end('Gesso!');
+  res.end(nunjucks.render('index.html'));
 });
 
 

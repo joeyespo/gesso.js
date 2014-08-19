@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>{% block title %}Gesso{% endblock %}</title>
+  {% block style_overrides %}
+    <link rel="stylesheet" href="/vendor/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/font-awesome.min.css" />
+    <link rel="stylesheet" href="/styles/_base.css" />
+  {% endblock %}
+  {% block styles %}{% endblock %}
+</head>
+<body>
+  {% block page_container %}
+    <div class="page">
+      {% block page %}{% endblock %}
+    </div>
+  {% endblock %}
+
+  {% block dialogs %}{% endblock %}
+  {% block script_overrides %}
+    <script src="/vendor/jquery/jquery.min.js"></script>
+    <script src="/vendor/bootstrap/dist/js/bootstrap.min.js"></script>
+  {% endblock %}
+  {% block scripts %}{% endblock %}
+</body>
+</html>
