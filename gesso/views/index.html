@@ -1,9 +1,14 @@
 {% extends '_base.html' %}
 
 
+{% block styles %}
+  <link rel="stylesheet" href="/styles/index.css" />
+{% endblock %}
+
+
 {% block page %}
   <div class="container">
     <h1>Gesso</h1>
-    <p>Welcome to Gesso!</p>
+    <canvas class="generated-canvas {{ canvasClass }}" width="{{ canvasWidth }}" height="{{ canvasHeight }}"></canvas>
   </div>
 {% endblock %}

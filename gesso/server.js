@@ -13,7 +13,17 @@ nunjucks.configure(path.join(__dirname, 'views'));
 
 // Routes
 app.get('/', function(req, res) {
-  res.end(nunjucks.render('index.html'));
+  var canvasClass = settings.CANVAS_CLASS;
+  var canvasWidth = settings.CANVAS_WIDTH;
+  var canvasHeight = settings.CANVAS_HEIGHT;
+
+  // TODO: Get values from project settings
+
+  res.end(nunjucks.render('index.html', {
+    canvasClass: canvasClass,
+    canvasWidth: canvasWidth,
+    canvasHeight: canvasHeight
+  }));
 });
 
 
