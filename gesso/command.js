@@ -44,6 +44,8 @@ function globalMain() {
 function main(argv) {
   var options = docopt(doc, {argv: argv, version: version});
 
+  // TODO: Build command
+
   // Run server
   server.serve(options['<path>']);
 }
