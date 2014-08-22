@@ -1,40 +1,63 @@
 var path = require('path');
 var nunjucks = require('nunjucks');
 var express = require('express');
+var build = require('./build');
 var settings = require('./settings');
 
 
-// Express application
-var app = express();
-app.use(express.static(path.join(__dirname, 'public')));
-// Configure extension
-nunjucks.configure(path.join(__dirname, 'views'));
+function createApp(watcher) {
+  // Express application
+  var app = express();
+  // Attach watcher
+  app.watcher = watcher || null;
+  // Middleware
+  app.use(express.static(path.join(__dirname, 'public')));
+  // Configure extensions
+  nunjucks.configure(path.join(__dirname, 'views'));
+
+  // Routes
+  app.get('/', function(req, res) {
+    watcher.whenReady(function() {
+      var canvasClass = settings.CANVAS_CLASS;
+      var canvasWidth = settings.CANVAS_WIDTH;
+      var canvasHeight = settings.CANVAS_HEIGHT;
+
+      // TODO: Get values from project settings
+
+      res.end(nunjucks.render('index.html', {
+        canvasClass: canvasClass,
+        canvasWidth: canvasWidth,
+        canvasHeight: canvasHeight
+      }));
+    });
+  });
+
+  return app;
+}
 
 
-// Routes
-app.get('/', function(req, res) {
-  var canvasClass = settings.CANVAS_CLASS;
-  var canvasWidth = settings.CANVAS_WIDTH;
-  var canvasHeight = settings.CANVAS_HEIGHT;
+function serve(packagePath) {
+  // TODO: Resolve root path
+  if (!packagePath) {
+    packagePath = process.cwd();
+  }
 
-  // TODO: Get values from project settings
+  // Create the watcher
+  var watcher = build.watch(packagePath);
 
-  res.end(nunjucks.render('index.html', {
-    canvasClass: canvasClass,
-    canvasWidth: canvasWidth,
-    canvasHeight: canvasHeight
-  }));
-});
+  // Create the app
+  var app = createApp(watcher);
 
-
-function serve(path) {
   // Run the server
   app.listen(settings.PORT, settings.HOST, function() {
     console.log(' * Listening on http://%s:%d/', settings.HOST, settings.PORT);
   });
+
+  return app;
 }
 
 
 module.exports = {
+  createApp: createApp,
   serve: serve
 };
