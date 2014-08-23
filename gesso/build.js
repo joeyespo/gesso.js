@@ -2,6 +2,11 @@ var path = require('path');
 var chokidar = require('chokidar');
 
 
+function build(packagePath) {
+  // TODO: implement
+}
+
+
 function _Watcher(packagePath) {
   var self = this;
 
@@ -17,7 +22,7 @@ function _Watcher(packagePath) {
         return true;
       }
 
-      selfPath = path.join('node_modules', 'gesso');
+      var selfPath = path.join('node_modules', 'gesso');
       var index = filename.lastIndexOf(selfPath);
       if (index !== -1 && filename.substr(index) === selfPath) {
         return true;
@@ -59,11 +64,6 @@ _Watcher.prototype.rebuild = function() {
     this._isRebuilding = false;
   }
 };
-
-
-function build(packagePath) {
-  // TODO: implement
-}
 
 
 function watch(packagePath) {

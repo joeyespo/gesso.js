@@ -1,0 +1,35 @@
+// http://www.jshint.com/docs/options/
+{
+  // Enforcing options
+  "camelcase": true,
+  "curly": true,
+  "eqeqeq": true,
+  "forin": true,
+  "freeze": true,
+  "immed": true,
+  "indent": 2,
+  "latedef": true,
+  "newcap": true,
+  "noarg": true,
+  "noempty": true,
+  "nonbsp": true,
+  "quotmark": "single",
+  "undef": true,
+  "unused": "vars",
+
+  // Relaxing options
+  "eqnull": true,
+  "multistr": true,
+
+  // Environments
+  "node": true,
+
+  "globals": {
+    "__dirname": true,
+    "console": true,
+    "exports": true,
+    "module": true,
+    "process": true,
+    "require": true
+  }
+}
