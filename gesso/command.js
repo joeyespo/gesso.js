@@ -27,6 +27,8 @@ function globalMain() {
   }).launch({}, function(env) {
     // Check for local installation
     if (!env.modulePath) {
+      // TODO: Check for package.json and either warn that there's no project or show help instead
+
       // Show --help or --version and exit
       docopt(doc, {version: version});
       // Show local installation message and exit
