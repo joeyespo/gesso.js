@@ -17,12 +17,13 @@ function createApp(watcher) {
 
   // Routes
   app.get('/', function(req, res) {
-    watcher.whenReady(function() {
+    watcher.whenBuilt(function(err, content) {
       var canvasClass = settings.CANVAS_CLASS;
       var canvasWidth = settings.CANVAS_WIDTH;
       var canvasHeight = settings.CANVAS_HEIGHT;
 
       // TODO: Get values from project settings
+      // TODO: Provide errors and build content
 
       res.end(nunjucks.render('index.html', {
         canvasClass: canvasClass,
@@ -51,8 +52,9 @@ function serve(packagePath) {
   // Run the server
   app.listen(settings.PORT, settings.HOST, function() {
     console.log(' * Listening on http://%s:%d/', settings.HOST, settings.PORT);
-    // Start first build
-    watcher.rebuild();
+
+    // Run first build and start watching
+    watcher.watch();
   });
 
   return app;
