@@ -51,6 +51,8 @@ function serve(packagePath) {
   // Run the server
   app.listen(settings.PORT, settings.HOST, function() {
     console.log(' * Listening on http://%s:%d/', settings.HOST, settings.PORT);
+    // Start first build
+    watcher.rebuild();
   });
 
   return app;
