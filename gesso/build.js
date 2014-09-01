@@ -3,7 +3,44 @@ var path = require('path');
 var chokidar = require('chokidar');
 
 
-function build(packagePath, callback) {
+function _buildWithLookup(packagePath, build, callback) {
+  var pkg = path.join(packagePath, 'package.json');
+
+  fs.readFile(pkg, 'utf8', function(err, data) {
+    if (err) {
+      callback(err);
+      return;
+    }
+
+    var entryPoint = null;
+    try {
+      var pkg = JSON.parse(data);
+      if (pkg.main) {
+        entryPoint = pkg.main;
+      }
+    }
+    catch(ex) {
+      callback(ex);
+      return;
+    }
+
+    build(packagePath, entryPoint, callback);
+  });
+}
+
+
+function build(packagePath, entryPoint, callback) {
+  if (typeof callback === 'undefined') {
+    if (typeof entryPoint === 'function') {
+      var tmp = entryPoint;
+      entryPoint = callback;
+      callback = tmp;
+    }
+  }
+  if (typeof entryPoint === 'undefined') {
+    return _buildWithLookup(packagePath, build, callback);
+  }
+
   // TODO: implement
 
   if (typeof callback === 'function') {
