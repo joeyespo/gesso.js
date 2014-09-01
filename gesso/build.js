@@ -1,9 +1,14 @@
+var fs = require('fs');
 var path = require('path');
 var chokidar = require('chokidar');
 
 
-function build(packagePath) {
+function build(packagePath, callback) {
   // TODO: implement
+
+  if (typeof callback === 'function') {
+    callback(null);
+  }
 }
 
 
@@ -56,12 +61,20 @@ _Watcher.prototype.whenReady = function(callback) {
     callback();
   }
 };
-_Watcher.prototype.rebuild = function() {
+_Watcher.prototype.rebuild = function(callback) {
   this._isRebuilding = true;
   try {
-    build(this.packagePath);
-  } finally {
+    build(this.packagePath, function() {
+      this._isRebuilding = false;
+      if (typeof callback === 'function') {
+        callback(null);
+      }
+    });
+  } catch(ex) {
     this._isRebuilding = false;
+    if (typeof callback === 'function') {
+      callback(ex);
+    }
   }
 };
 
