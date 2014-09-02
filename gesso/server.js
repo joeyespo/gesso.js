@@ -1,11 +1,15 @@
 var path = require('path');
 var nunjucks = require('nunjucks');
 var express = require('express');
-var build = require('./build');
+var builder = require('./builder');
+var watcher = require('./watcher');
 var settings = require('./settings');
+// Unpack
+var Builder = builder.Builder;
+var Watcher = watcher.Watcher;
 
 
-function createApp(watcher) {
+function createApp(builder) {
   // Express application
   var app = express();
   // Attach watcher
@@ -17,7 +21,7 @@ function createApp(watcher) {
 
   // Routes
   app.get('/', function(req, res) {
-    watcher.whenBuilt(function(err, content) {
+    builder.ready(function() {
       var canvasClass = settings.CANVAS_CLASS;
       var canvasWidth = settings.CANVAS_WIDTH;
       var canvasHeight = settings.CANVAS_HEIGHT;
@@ -43,17 +47,21 @@ function serve(packagePath) {
     packagePath = process.cwd();
   }
 
-  // Create the watcher
-  var watcher = build.watch(packagePath);
+  // Create builder and watcher
+  var builder = new Builder(packagePath);
+  var watcher = new Watcher(packagePath, builder);
 
   // Create the app
   var app = createApp(watcher);
+
+  // Run first build
+  builder.build();
 
   // Run the server
   app.listen(settings.PORT, settings.HOST, function() {
     console.log(' * Listening on http://%s:%d/', settings.HOST, settings.PORT);
 
-    // Run first build and start watching
+    // Start watching
     watcher.watch();
   });
 
