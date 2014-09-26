@@ -22,7 +22,7 @@ function createApp(builder) {
   // Routes
   app.get('/', function(req, res) {
     builder.ready(function() {
-      var canvasClass = settings.CANVAS_CLASS;
+      var canvasId = settings.CANVAS_ID;
       var canvasWidth = settings.CANVAS_WIDTH;
       var canvasHeight = settings.CANVAS_HEIGHT;
 
@@ -31,7 +31,7 @@ function createApp(builder) {
 
       res.end(nunjucks.render('index.html', {
         gessoScript: '/gesso-bundle.js',
-        canvasClass: canvasClass,
+        canvasId: canvasId,
         canvasWidth: canvasWidth,
         canvasHeight: canvasHeight
       }));
