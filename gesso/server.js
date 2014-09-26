@@ -30,10 +30,17 @@ function createApp(builder) {
       // TODO: Provide errors and build content
 
       res.end(nunjucks.render('index.html', {
+        gessoScript: '/gesso-bundle.js',
         canvasClass: canvasClass,
         canvasWidth: canvasWidth,
         canvasHeight: canvasHeight
       }));
+    });
+  });
+
+  app.get('/gesso-bundle.js', function(req, res) {
+    builder.ready(function(err, output) {
+      res.end(output || '');
     });
   });
 
@@ -52,7 +59,7 @@ function serve(packagePath) {
   var watcher = new Watcher(packagePath, builder);
 
   // Create the app
-  var app = createApp(watcher);
+  var app = createApp(builder);
 
   // Run first build
   builder.build();
