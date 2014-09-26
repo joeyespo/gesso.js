@@ -48,11 +48,10 @@ function createApp(builder) {
 }
 
 
-function serve(packagePath) {
-  // TODO: Resolve root path
-  if (!packagePath) {
-    packagePath = process.cwd();
-  }
+function serve(port, host) {
+  port = port || settings.PORT;
+  host = host || settings.HOST;
+  var packagePath = process.cwd();
 
   // Create builder and watcher
   var builder = new Builder(packagePath);
@@ -65,8 +64,8 @@ function serve(packagePath) {
   builder.build();
 
   // Run the server
-  app.listen(settings.PORT, settings.HOST, function() {
-    console.log(' * Listening on http://%s:%d/', settings.HOST, settings.PORT);
+  app.listen(port, host, function() {
+    console.log(' * Listening on http://%s:%d/', host, port);
 
     // Start watching
     watcher.watch();
