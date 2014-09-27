@@ -2,9 +2,9 @@ var path = require('path');
 var chokidar = require('chokidar');
 
 
-function Watcher(path, builder) {
-  this.path = path;
+function Watcher(builder) {
   this.builder = builder;
+  this.path = builder.path;
   this.silent = false;
   this._innerWatcher = null;
 }

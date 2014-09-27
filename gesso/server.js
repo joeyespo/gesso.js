@@ -55,7 +55,7 @@ function serve(port, host) {
 
   // Create builder and watcher
   var builder = new Builder(packagePath);
-  var watcher = new Watcher(packagePath, builder);
+  var watcher = new Watcher(builder);
 
   // Create the app
   var app = createApp(builder);
