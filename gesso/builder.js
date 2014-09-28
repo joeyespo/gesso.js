@@ -80,6 +80,16 @@ Builder.prototype._postbuild = function(err, output) {
     }
   }
 };
+Builder.prototype._translateError = function(err) {
+  switch(err.errno) {
+  case 28:
+    return new Error('Entry point must be a file, not a directory: ' + this.entryPoint);
+  case 34:
+    return new Error('Entry point not found: ' + this.entryPoint);
+  default:
+    return new Error('Could not run build: ' + String(err) + ' (errno: ' + err.errno + ')');
+  }
+};
 Builder.prototype.isBuilding = function() {
   return this._latestBuild !== null;
 };
@@ -102,6 +112,10 @@ Builder.prototype.build = function(callback) {
 
   var currentBuild = self._prebuild();
   webmake(self.entryPoint, function(err, output) {
+    if (err && err.errno) {
+      err = self._translateError(err);
+    }
+
     // Handle post-build only if this is the latest build
     if (currentBuild === self._latestBuild) {
       self._postbuild(err, output);
