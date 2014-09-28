@@ -11,37 +11,52 @@ function _BuildRef() {
 }
 
 
-function resolveEntryPoint(fileOrPath) {
+function Builder(entryPoint) {
+  this.packagePath = null;
+  this.projectName = null;
+  this.entryPoint = null;
+  this.path = null;
+  this._readyQueue = [];
+  this._latestBuild = null;
+  this._lastOutput = null;
+  this._lastError = null;
+  this._resolvePaths(entryPoint);
+}
+Builder.prototype._resolvePaths = function(fileOrPath) {
   if (typeof fileOrPath === 'undefined') {
     fileOrPath = '.';
   }
 
   // Try reading entry point from package
+  var projectName = null;
+  var entryPoint = null;
   if (fileOrPath === '.' || fs.lstatSync(fileOrPath).isDirectory()) {
-    var entryPoint = null;
+    var packagePath = path.resolve(path.join(fileOrPath, PACKAGE_FILE));
     try {
-      entryPoint = require(path.resolve(path.join(fileOrPath, PACKAGE_FILE))).main;
+      var pkg = require(packagePath);
+      projectName = pkg.name;
+      entryPoint = pkg.main;
     } catch(ex) {
     }
-    if (!entryPoint) {
+    if (entryPoint) {
+      this.packagePath = packagePath;
+    } else {
       entryPoint = path.join(fileOrPath, DEFAULT_ENTRY_POINT);
     }
-    return path.resolve(entryPoint);
+  } else {
+    entryPoint = fileOrPath;
   }
 
-  return path.resolve(fileOrPath);
-}
-
-
-function Builder(entryPoint) {
-  entryPoint = resolveEntryPoint(entryPoint);
+  entryPoint = path.resolve(entryPoint);
+  if (projectName === null) {
+    projectName = path.basename(entryPoint);
+    var extname = path.extname(projectName);
+    projectName = projectName.slice(0, projectName.length - extname.length);
+  }
+  this.projectName = projectName;
   this.entryPoint = entryPoint;
   this.path = path.dirname(entryPoint);
-  this._readyQueue = [];
-  this._latestBuild = null;
-  this._lastOutput = null;
-  this._lastError = null;
-}
+};
 Builder.prototype._prebuild = function() {
   var latestBuild = new _BuildRef();
   this._latestBuild = latestBuild;
@@ -102,6 +117,5 @@ Builder.prototype.build = function(callback) {
 
 module.exports = {
   DEFAULT_ENTRY_POINT: DEFAULT_ENTRY_POINT,
-  Builder: Builder,
-  resolveEntryPoint: resolveEntryPoint
+  Builder: Builder
 };
