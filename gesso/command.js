@@ -3,6 +3,7 @@ var docopt = require('docopt');
 var Liftoff = require('liftoff');
 var tildify = require('tildify');
 var chalk = require('chalk');
+var bundler  = require('./bundler');
 var server = require('./server');
 var pkg = require('../package');
 
@@ -20,6 +21,11 @@ Commands:
     Aliases: server, s
     --port=<port>, -p   (Default: 5000)
     --host=<host>       (Default: 0.0.0.0)
+
+  gesso bundle [options]
+    Builds your app and bundles it into the output file (dist/gesso-bundle.js by default).
+    Aliases: b
+    --out=<path>        (Default: dist/gesso-bundle.js)
 */});
 
 
@@ -51,6 +57,11 @@ function main(argv) {
   var command = options['<command>'];
 
   switch(command) {
+  case 'bundle':
+  case 'b':
+    bundler.bundle(options['--out']);
+    break;
+
   case 'serve':
   case 'server':
   case 's':
@@ -69,6 +80,10 @@ function packagelessMain(argv) {
   var command = options['<command>'];
 
   switch(command) {
+  case 'bundle':
+  case 'b':
+    break;
+
   case 'serve':
   case 'server':
   case 's':
