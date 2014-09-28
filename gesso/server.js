@@ -48,10 +48,9 @@ function createApp(builder) {
 }
 
 
-function serve(port, host) {
+function serve(port, host, packagePath) {
   port = port || settings.PORT;
   host = host || settings.HOST;
-  var packagePath = process.cwd();
 
   // Create builder and watcher
   var builder = new Builder(packagePath);

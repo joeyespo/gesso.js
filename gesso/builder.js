@@ -12,23 +12,31 @@ function _BuildRef() {
 
 
 function resolveEntryPoint(fileOrPath) {
-  if (!fileOrPath || fileOrPath === DEFAULT_ENTRY_POINT) {
-    return DEFAULT_ENTRY_POINT;
+  if (typeof fileOrPath === 'undefined') {
+    fileOrPath = '.';
   }
 
   // Try reading entry point from package
-  var stats = fs.lstatSync(fileOrPath);
-  if (stats.isDirectory()) {
-    var pkg = require(path.join(fileOrPath, PACKAGE_FILE));
-    return pkg.main || DEFAULT_ENTRY_POINT;
+  if (fileOrPath === '.' || fs.lstatSync(fileOrPath).isDirectory()) {
+    var entryPoint = null;
+    try {
+      entryPoint = require(path.resolve(path.join(fileOrPath, PACKAGE_FILE))).main;
+    } catch(ex) {
+    }
+    if (!entryPoint) {
+      entryPoint = path.join(fileOrPath, DEFAULT_ENTRY_POINT);
+    }
+    return path.resolve(entryPoint);
   }
 
-  return path;
+  return path.resolve(fileOrPath);
 }
 
 
 function Builder(entryPoint) {
-  this.entryPoint = resolveEntryPoint(entryPoint);
+  entryPoint = resolveEntryPoint(entryPoint);
+  this.entryPoint = entryPoint;
+  this.path = path.dirname(entryPoint);
   this._readyQueue = [];
   this._latestBuild = null;
   this._lastOutput = null;
