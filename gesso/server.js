@@ -1,3 +1,4 @@
+var os = require('os');
 var path = require('path');
 var nunjucks = require('nunjucks');
 var express = require('express');
@@ -21,7 +22,7 @@ function createApp(builder) {
 
   // Routes
   app.get('/', function(req, res) {
-    builder.ready(function() {
+    builder.ready(function(err) {
       var canvasId = settings.CANVAS_ID;
       var canvasWidth = settings.CANVAS_WIDTH;
       var canvasHeight = settings.CANVAS_HEIGHT;
@@ -29,9 +30,12 @@ function createApp(builder) {
       // TODO: Get values from project settings
       // TODO: Provide errors and build content
 
+      var gessoBuildError = err ? String(err) + os.EOL : null;
+
       res.end(nunjucks.render('index.html', {
         gessoScript: '/gesso-bundle.js',
         gessoProjectName: builder.projectName,
+        gessoBuildError: gessoBuildError,
         canvasId: canvasId,
         canvasWidth: canvasWidth,
         canvasHeight: canvasHeight

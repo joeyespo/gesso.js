@@ -8,12 +8,22 @@
 
 {% block scripts %}
   <script src="{{ gessoScript }}"></script>
+  <script>
+    var buildError = $('.build-error');
+    if (buildError) {
+      buildError.focus();
+    }
+  </script>
 {% endblock %}
 
 
 {% block page %}
   <div class="container">
     <h1>{{ gessoProjectName }}</h1>
-    <canvas id="{{ canvasId }}" class="generated-canvas" width="{{ canvasWidth }}" height="{{ canvasHeight }}"></canvas>
+    {% if gessoBuildError %}
+      <textarea class="build-error" rows="24" cols="80">{{ gessoBuildError }}</textarea>
+    {% else %}
+      <canvas id="{{ canvasId }}" class="generated-canvas" width="{{ canvasWidth }}" height="{{ canvasHeight }}"></canvas>
+    {% endif %}
   </div>
 {% endblock %}

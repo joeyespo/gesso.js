@@ -7,3 +7,10 @@ h1 {
   margin: 12px auto;
   border: 1px solid #ddd;
 }
+
+.build-error {
+  display: block;
+  margin: 12px auto;
+  border: 1px solid #ddd;
+  font-family: Menlo, Monaco, Consolas, 'Courier New', monospace;
+}
