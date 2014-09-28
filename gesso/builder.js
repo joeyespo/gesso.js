@@ -55,13 +55,13 @@ Builder.prototype._postbuild = function(err, output) {
   this._lastOutput = output;
   this._lastError = err;
 
-  // Call all whenReady callbacks
+  // Call all ready callbacks
   for (var index = 0; index < readyQueue.length; index++) {
     var callback = readyQueue[index];
     try {
       callback(err, output);
     } catch(ex) {
-      console.log('Error in whenReady callback: ' + ex);
+      console.log('Error in ready callback: ' + ex);
     }
   }
 };
@@ -89,7 +89,7 @@ Builder.prototype.build = function(callback) {
   webmake(self.entryPoint, function(err, output) {
     // Handle post-build only if this is the latest build
     if (currentBuild === self._latestBuild) {
-      self._postbuild(err, output, callback);
+      self._postbuild(err, output);
     }
 
     // Always call callback of current build
