@@ -15,7 +15,7 @@ function _callback(callback, err) {
 
 function _error(callback, err, header) {
   if (err) {
-    console.log((header ? header + ': ' : '') + err.toString());
+    console.log((header ? header + ': ' : '') + String(err));
   }
   return _callback(callback, err);
 }
