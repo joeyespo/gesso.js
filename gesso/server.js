@@ -31,6 +31,7 @@ function createApp(builder) {
 
       res.end(nunjucks.render('index.html', {
         gessoScript: '/gesso-bundle.js',
+        gessoProjectName: builder.projectName,
         canvasId: canvasId,
         canvasWidth: canvasWidth,
         canvasHeight: canvasHeight
