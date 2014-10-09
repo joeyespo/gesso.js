@@ -1,4 +1,5 @@
 var path = require('path');
+var chalk = require('chalk');
 var chokidar = require('chokidar');
 
 
@@ -36,7 +37,7 @@ Watcher.prototype._watching = function() {
   // Wait for latest build to finish
   self.builder.ready(function(err, output) {
     if (err) {
-      console.log(String(err));
+      console.log(chalk.red(String(err)));
     }
 
     if (!self.silent) {
