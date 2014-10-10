@@ -1,5 +1,6 @@
 var fs = require('fs');
 var path = require('path');
+var esprima = require('esprima');
 var webmake = require('webmake');
 
 
@@ -112,8 +113,21 @@ Builder.prototype.build = function(callback) {
 
   var currentBuild = self._prebuild();
   webmake(self.entryPoint, function(err, output) {
+    // Translate webmake errors into human-readable build errors
     if (err && err.errno) {
       err = self._translateError(err);
+    }
+
+    // Validate JavaScript
+    if (!err) {
+      try {
+        var syntax = esprima.parse(output, {tolerant: true});
+        if (syntax.errors.length !== 0) {
+          err = syntax.errors.join('\n');
+        }
+      } catch (e) {
+        err = e;
+      }
     }
 
     // Handle post-build only if this is the latest build
