@@ -30,7 +30,7 @@ function createApp(builder) {
       // TODO: Get values from project settings
       // TODO: Provide errors and build content
 
-      var gessoBuildError = err ? String(err) + os.EOL : null;
+      var gessoBuildError = err ? (err.message || String(err)) + os.EOL : null;
 
       res.end(nunjucks.render('index.html', {
         gessoScript: '/gesso-bundle.js',

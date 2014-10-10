@@ -37,7 +37,8 @@ Watcher.prototype._watching = function() {
   // Wait for latest build to finish
   self.builder.ready(function(err, output) {
     if (err) {
-      console.log(chalk.red(String(err)));
+      console.log(chalk.red('Build error:'));
+      console.log(chalk.red(err.message || String(err)));
     }
 
     if (!self.silent) {

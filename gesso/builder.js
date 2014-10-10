@@ -88,7 +88,7 @@ Builder.prototype._translateError = function(err) {
   case 34:
     return new Error('Entry point not found: ' + this.entryPoint);
   default:
-    return new Error('Could not run build: ' + String(err) + ' (errno: ' + err.errno + ')');
+    return new Error('Could not run build: ' + (err.message || String(err)) + ' (errno: ' + err.errno + ')');
   }
 };
 Builder.prototype.isBuilding = function() {
@@ -117,6 +117,8 @@ Builder.prototype.build = function(callback) {
     if (err && err.errno) {
       err = self._translateError(err);
     }
+
+    // TODO: Validate each file separately (or use a sourcemap here)
 
     // Validate JavaScript
     if (!err) {
