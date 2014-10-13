@@ -17,6 +17,18 @@ function getCanvas() {
 }
 
 
+function getContext2D() {
+  return getCanvas().getContext('2d');
+}
+
+
+function getWebGLContext() {
+  return getCanvas().getContext('webgl');
+}
+
+
 module.exports = {
-  getCanvas: getCanvas
+  getCanvas: getCanvas,
+  getContext2D: getContext2D,
+  getWebGLContext: getWebGLContext
 };
