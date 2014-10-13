@@ -7,7 +7,9 @@
 
 
 {% block scripts %}
-  <script src="{{ gessoScript }}"></script>
+  {% if not gessoBuildError %}
+    <script src="{{ gessoScript }}"></script>
+  {% endif %}
   <script>
     var buildError = $('.build-error');
     if (buildError) {
