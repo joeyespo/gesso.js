@@ -1,3 +1,6 @@
+var raf = require('./raf');
+
+
 function getCanvas() {
   // TODO: Read the project settings use the right ID
   var canvas = window.document.getElementById('gesso-target');
@@ -28,6 +31,8 @@ function getWebGLContext() {
 
 
 module.exports = {
+  requestAnimationFrame: raf.requestAnimationFrame,
+  cancelAnimationFrame: raf.cancelAnimationFrame,
   getCanvas: getCanvas,
   getContext2D: getContext2D,
   getWebGLContext: getWebGLContext
