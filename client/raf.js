@@ -36,6 +36,6 @@ if (!cancelAnimationFrame) {
 
 
 module.exports = {
-  requestAnimationFrame: requestAnimationFrame,
-  cancelAnimationFrame: cancelAnimationFrame
+  requestAnimationFrame: function(step) { return requestAnimationFrame(step); },
+  cancelAnimationFrame: function(requestID) { return cancelAnimationFrame(requestID); }
 };
