@@ -1,0 +1,21 @@
+{
+  "name": "gesso-example-hello",
+  "version": "0.0.1",
+  "author": "Joe Esposito <joe@joeyespo.com>",
+  "description": "The example from the Gesso README.",
+  "homepage": "http://github.com/joeyespo/gessojs",
+  "license": "ISC",
+  "private": true,
+  "gesso": {
+    "canvasWidth": 350,
+    "canvasHeight": 250
+  },
+  "main": "index.js",
+  "scripts": {
+    "server": "gesso serve",
+    "build": "gesso build"
+  },
+  "dependencies": {
+    "gesso": "^0.9.0"
+  }
+}
