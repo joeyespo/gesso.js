@@ -13,4 +13,10 @@ h1 {
   margin: 12px auto;
   border: 1px solid #ddd;
   font-family: Menlo, Monaco, Consolas, 'Courier New', monospace;
+  font-size: 12px;
+  width: 640px;
+  height: 480px;
+  color: red;
+  white-space: nowrap;
+  overflow: auto;
 }

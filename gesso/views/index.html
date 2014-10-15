@@ -23,7 +23,7 @@
   <div class="container">
     <h1>{{ gessoProjectName }}</h1>
     {% if gessoBuildError %}
-      <textarea class="build-error" rows="24" cols="80">{{ gessoBuildError }}</textarea>
+      <textarea class="build-error">{{ gessoBuildError }}</textarea>
     {% else %}
       <canvas id="{{ canvasId }}" class="generated-canvas" width="{{ canvasWidth }}" height="{{ canvasHeight }}"></canvas>
     {% endif %}
