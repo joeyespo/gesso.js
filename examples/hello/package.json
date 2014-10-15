@@ -16,6 +16,6 @@
     "build": "gesso build"
   },
   "dependencies": {
-    "gesso": "^0.9.0"
+    "gesso": "^0.8.0"
   }
 }
