@@ -81,7 +81,7 @@ Builder.prototype._postbuild = function(err, output) {
     }
   }
 };
-Builder.prototype._translateError = function(err) {
+Builder.prototype._translateIOError = function(err) {
   switch(err.errno) {
   case 28:
     return new Error('Entry point must be a file, not a directory: ' + this.entryPoint);
@@ -90,6 +90,85 @@ Builder.prototype._translateError = function(err) {
   default:
     return new Error('Could not run build: ' + (err.message || String(err)) + ' (errno: ' + err.errno + ')');
   }
+};
+Builder.prototype._translatePreprocessError = function(error) {
+  var filename = error.message;
+  var lineNumber = 0;
+
+  var lineIndex = filename.indexOf(':');
+  if (lineIndex !== -1) {
+    var lineNumberIndex = filename.lastIndexOf(' ', lineIndex);
+    if (lineNumberIndex !== -1) {
+      lineNumber = filename.substring(lineNumberIndex + 1, lineIndex);
+    }
+    filename = filename.substr(lineIndex + 1).trim();
+  }
+  if (error.origin.description) {
+    var errorIndex = filename.indexOf(error.origin.description);
+    if (errorIndex !== -1) {
+      filename = filename.substr(errorIndex + error.origin.description.length).trim();
+    }
+  }
+  var inIndex = filename.indexOf('in');
+  if (inIndex !== -1) {
+    filename = filename.substr(inIndex + 2).trim();
+  }
+  console.log(filename + ':' + lineNumber);
+  return new Error([
+    filename + ':' + lineNumber,
+    '',
+    'SyntaxError: ' + error.origin.description || error.message,
+  ].join('\n'));
+};
+// HACK: Adjust for line number until files can be checked individually
+Builder.prototype._translateSyntaxErrorFix = function(error, output) {
+  var filename = '(unknown)';
+  var lineNumber = '(unknown)';
+  var indentOffset = 0;
+
+  // Use basic string matching to get the base of the filename (good enough),
+  // estimated line number, and indent. This give *some* context until the HACK
+  // in build is fixed.
+  var header = '": function (exports, module, require) {';
+  var headerIndex = output.lastIndexOf(header, error.index);
+  if (headerIndex !== -1) {
+    var lines = header.substring(headerIndex, error.index);
+    lineNumber = (lines.match(/\n/g) || []).length;
+
+    var headerLineIndex = output.lastIndexOf('\n', headerIndex);
+    if (headerLineIndex !== -1) {
+      var nameIndex = output.indexOf('"', headerLineIndex);
+      if (nameIndex !== -1) {
+        // Mote: webmake template uses tabs
+        indentOffset = nameIndex - headerLineIndex + 1;
+        filename = output.substring(nameIndex + 1, headerIndex);
+      }
+    }
+  }
+
+  // Get line
+  var lineStartIndex = output.lastIndexOf('\n', error.index);
+  if (lineStartIndex === -1) {
+    lineStartIndex = 0;
+  }
+  var lineEndIndex = output.indexOf('\n', error.index);
+  if (lineEndIndex === -1) {
+    lineEndIndex = output.length - 1;
+  }
+  var line = output.substring(lineStartIndex + indentOffset, lineEndIndex);
+
+  var marker = '';
+  for (; marker.length < error.column - indentOffset;) {
+    marker += ' ';
+  }
+  marker += '^';
+
+  return new Error([
+    filename + ':' + lineNumber,
+    line,
+    marker,
+    'SyntaxError: ' + error.description,
+  ].join('\n'));
 };
 Builder.prototype.isBuilding = function() {
   return this._latestBuild !== null;
@@ -112,35 +191,47 @@ Builder.prototype.build = function(callback) {
   var self = this;
 
   var currentBuild = self._prebuild();
-  webmake(self.entryPoint, function(err, output) {
-    // Translate webmake errors into human-readable build errors
-    if (err && err.errno) {
-      err = self._translateError(err);
-    }
-
-    // TODO: Validate each file separately (or use a sourcemap here)
-
-    // Validate JavaScript
-    if (!err) {
-      try {
-        var syntax = esprima.parse(output, {tolerant: true});
-        if (syntax.errors.length !== 0) {
-          err = syntax.errors.join('\n');
-        }
-      } catch (e) {
-        err = e;
+  webmake(self.entryPoint, {sourceMap: true, cache: true}, function(err, output) {
+    // TODO: Validate each file individually to get proper line numbers
+    // HACK: Workaround to report syntax errors before reaching the eval
+    // expression in the browser, which blows up without any helpful context.
+    // This still doesn't give correct line numbers, but does report it early
+    // Waiting on http://github.com/medikoo/modules-webmake/issues/47
+    webmake(self.entryPoint, {cache: false}, function(err, rawOutput) {
+      // Translate webmake errors into human-readable build errors
+      if (err && err.errno) {
+        err = self._translateIOError(err);
       }
-    }
 
-    // Handle post-build only if this is the latest build
-    if (currentBuild === self._latestBuild) {
-      self._postbuild(err, output);
-    }
+      // Translate webmake errors into human-readable build errors
+      if (err && err.origin) {
+        err = self._translatePreprocessError(err);
+      }
 
-    // Always call callback of current build
-    if (typeof callback === 'function') {
-      callback(err, output);
-    }
+      // Validate JavaScript
+      if (!err) {
+        try {
+          var syntax = esprima.parse(rawOutput, {tolerant: true});
+          if (syntax.errors.length !== 0) {
+            err = new Error(syntax.errors.map(function(err) {
+              return self._translateSyntaxErrorFix(err, rawOutput).message;
+            }).join('\n'));
+          }
+        } catch (e) {
+          err = self._translateSyntaxErrorFix(e, rawOutput);
+        }
+      }
+
+      // Handle post-build only if this is the latest build
+      if (currentBuild === self._latestBuild) {
+        self._postbuild(err, output);
+      }
+
+      // Always call callback of current build
+      if (typeof callback === 'function') {
+        callback(err, output);
+      }
+    });
   });
 };
 
