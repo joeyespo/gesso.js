@@ -27,7 +27,6 @@
     "esprima": "^1.2.2",
     "express": "^4.4.5",
     "liftoff": "^0.12.0",
-    "multiline": "^0.3.4",
     "nunjucks": "^1.0.5",
     "tildify": "^0.2.0"
   }

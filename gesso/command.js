@@ -1,4 +1,3 @@
-var multiline = require('multiline');
 var docopt = require('docopt');
 var Liftoff = require('liftoff');
 var tildify = require('tildify');
@@ -9,24 +8,24 @@ var pkg = require('../package');
 
 
 // CLI documentation and options
-var doc = multiline(function(){/*
-Usage:
-  gesso [<command>] [options]
-  gesso -v | --version
-  gesso -h | --help
-
-Commands:
-  gesso serve [options]
-    Builds and serves your app, rebuilding on file changes.
-    Aliases: server, s
-    --port=<port>, -p   (Default: 5000)
-    --host=<host>       (Default: 0.0.0.0)
-
-  gesso bundle [options]
-    Builds your app and bundles it into the output file (dist/gesso-bundle.js by default).
-    Aliases: b
-    --out=<path>        (Default: dist/gesso-bundle.js)
-*/});
+var doc = [
+  'Usage:',
+  '  gesso [<command>] [options]',
+  '  gesso -v | --version',
+  '  gesso -h | --help',
+  '',
+  'Commands:',
+  '  gesso serve [options]',
+  '    Builds and serves your app, rebuilding on file changes.',
+  '    Aliases: server, s',
+  '    --port=<port>, -p   (Default: 5000)',
+  '    --host=<host>       (Default: 0.0.0.0)',
+  '',
+  '  gesso bundle [options]',
+  '    Builds your app and bundles it into the output file (dist/gesso-bundle.js by default).',
+  '    Aliases: b',
+  '    --out=<path>        (Default: dist/gesso-bundle.js)',
+].join('\n');
 
 
 function exitWithHelp(version) {
