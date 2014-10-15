@@ -1,5 +1,6 @@
 var os = require('os');
 var path = require('path');
+var chalk = require('chalk');
 var nunjucks = require('nunjucks');
 var express = require('express');
 var builder = require('./builder');
@@ -19,6 +20,17 @@ function createApp(builder) {
   app.use(express.static(path.join(__dirname, 'public')));
   // Configure extensions
   nunjucks.configure(path.join(__dirname, 'views'));
+
+  app.use(function(req, res, next) {
+    next();
+    console.log(chalk.gray([
+      '[' + new Date().toISOString().split('.')[0].replace('T', ' ') + ']',
+      res.statusCode + ' -',
+      '"' + req.method + ' ' + req.url + ' HTTP/' + req.httpVersion + '"',
+      res.statusCode,
+      '-',
+    ].join(' ')));
+  });
 
   // Routes
   app.get('/', function(req, res) {
