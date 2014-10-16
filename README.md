@@ -14,7 +14,7 @@ What?
 Gesso is a command-line tool that:
 
 - **Builds** your project on-the-fly so you can see changes immediately
-- **Eliminates boilerplate** by running the result on a canvas on `localhost`
+- **Eliminates boilerplate** by running the result in a canvas on `localhost`
 - Lets you **deploy** by **adding a single** `<script>` element to your website
 
 Gesso also includes an optional base library, and a plugin system to handle
@@ -68,10 +68,10 @@ Usage
 
     ```bash
     $ gesso server
-     * Running on http://localhost:5000/
+     * Running on http://localhost:63550/
     ```
 
-    Now visit [http://localhost:5000](http://localhost:5000/) to see it in action.
+    Now visit [http://localhost:63550](http://localhost:63550/) to see it in action.
 
 
 Commands
@@ -93,7 +93,7 @@ $ gesso serve [options]
 
 *Aliases: `server`, `s`*
 
-- `--port, -p <port>`: The port to serve on (default `5000`)
+- `--port, -p <port>`: The port to serve on (default `63550`)
 - `--host <address>`: The host to serve from (default `0.0.0.0`)
 
 
@@ -116,9 +116,9 @@ Project layout
 Gesso projects are normal Node projects. The only additional requirements are:
 
 1. You need to include `gesso` as a dependency. The CLI delegates all commands
-    to the local installation so you to use different versions of Gesso in
+    to the local installation so you can use different versions of Gesso in
     different projects.
-2. Your project must expose an entry point. This is implied if you create an
+2. Your project must expose an entry point. This is implicit if you create an
     `index.js` file. Or you can be explicit by providing a [main][] field.
 
 Gesso uses [webmake][] to construct a `require()` dependency tree, including
