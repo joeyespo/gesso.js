@@ -27,6 +27,7 @@
     "express": "^4.4.5",
     "liftoff": "^0.12.0",
     "nunjucks": "^1.0.5",
-    "tildify": "^0.2.0"
+    "tildify": "^0.2.0",
+    "webmake": "^0.3.35"
   }
 }
