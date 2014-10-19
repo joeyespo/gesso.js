@@ -7,25 +7,49 @@
 
 
 {% block scripts %}
+  <script>
+    var errorInfo = $('.error-info');
+    if (errorInfo.hasClass('build-error')) {
+      showError();
+    }
+
+    function showError() {
+      var value = errorInfo.val();
+      errorInfo.val('');
+      errorInfo.removeClass('hidden');
+      errorInfo.val(value).scrollTop(errorInfo[0].scrollHeight).focus();
+    }
+
+    window.onerror = function(message, url, lineNumber, column, err) {
+      if (err && err.stack) {
+        message = err.stack;
+        if (message.indexOf(err) !== 0) {
+          message = '    ' + message.split('\n').join('\n    ').trim();
+          message = err + '\n' + message;
+        }
+      }
+      $('.generated-canvas').hide();
+      var value = errorInfo.val();
+      if (value) {
+        value += '\n';
+      }
+      errorInfo.val(value + message + '\n');
+      showError();
+    };
+  </script>
+
   {% if not gessoBuildError %}
     <script src="{{ gessoScript }}"></script>
   {% endif %}
-  <script>
-    var buildError = $('.build-error');
-    if (buildError) {
-      buildError.focus();
-    }
-  </script>
 {% endblock %}
 
 
 {% block page %}
   <div class="container">
     <h1>{{ gessoProjectName }}</h1>
-    {% if gessoBuildError %}
-      <textarea class="build-error">{{ gessoBuildError }}</textarea>
-    {% else %}
+    {% if not gessoBuildError %}
       <canvas id="{{ canvasId }}" class="generated-canvas" width="{{ canvasWidth }}" height="{{ canvasHeight }}"></canvas>
     {% endif %}
+    <textarea class="error-info {{ 'build-error' if gessoBuildError else 'hidden' }}" wrap="off">{{ gessoBuildError }}</textarea>
   </div>
 {% endblock %}
