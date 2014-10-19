@@ -129,55 +129,45 @@ Builder.prototype._formatBuildError = function(err) {
       return err;
     }
   }
+
+  return err;
 };
-// HACK: Adjust for line number until files can be checked individually
-Builder.prototype._translateSyntaxErrorFix = function(error, output) {
-  var filename = '(unknown)';
-  var lineNumber = '(unknown)';
-  var indentOffset = 0;
-
-  // Use basic string matching to get the base of the filename (good enough),
-  // estimated line number, and indent. This give *some* context until the HACK
-  // in build is fixed.
-  var header = '": function (exports, module, require) {';
-  var headerIndex = output.lastIndexOf(header, error.index);
-  if (headerIndex !== -1) {
-    var lines = header.substring(headerIndex, error.index);
-    lineNumber = (lines.match(/\n/g) || []).length;
-
-    var headerLineIndex = output.lastIndexOf('\n', headerIndex);
-    if (headerLineIndex !== -1) {
-      var nameIndex = output.indexOf('"', headerLineIndex);
-      if (nameIndex !== -1) {
-        // Mote: webmake template uses tabs
-        indentOffset = nameIndex - headerLineIndex + 1;
-        filename = output.substring(nameIndex + 1, headerIndex);
-      }
-    }
-  }
-
-  // Get line
-  var lineStartIndex = output.lastIndexOf('\n', error.index);
-  if (lineStartIndex === -1) {
-    lineStartIndex = 0;
-  }
-  var lineEndIndex = output.indexOf('\n', error.index);
+Builder.prototype._formatSyntaxError = function(err, filename, code) {
+  // Get line of code
+  var lineStartIndex = code.lastIndexOf('\n', err.index) + 1;
+  var lineEndIndex = code.indexOf('\n', err.index);
   if (lineEndIndex === -1) {
-    lineEndIndex = output.length - 1;
+    lineEndIndex = code.length;
   }
-  var line = output.substring(lineStartIndex + indentOffset, lineEndIndex);
+  var line = code.substring(lineStartIndex, lineEndIndex);
+  var position = err.column - 1;
 
+  // Show marker within trimmed window
+  var snippet;
+  var snippetPosition;
+  if (position <= 69) {
+    snippet = line.substr(0, 79);
+    snippetPosition = position;
+  } else if (line.length - position < 10) {
+    snippet = line.substr(line.length - 79, 79);
+    snippetPosition = 79 - (line.length - position);
+  } else {
+    snippet = line.substr(position - 69, 79);
+    snippetPosition = 69;
+  }
+
+  // Get code marker
   var marker = '';
-  for (; marker.length < error.column - indentOffset;) {
+  while (marker.length < snippetPosition) {
     marker += ' ';
   }
   marker += '^';
 
   return new Error([
-    filename + ':' + lineNumber,
-    line,
+    filename + ':' + err.lineNumber,
+    snippet,
     marker,
-    'SyntaxError: ' + error.description,
+    'SyntaxError: ' + err.description,
   ].join('\n'));
 };
 Builder.prototype.isBuilding = function() {
@@ -201,42 +191,44 @@ Builder.prototype.build = function(callback) {
   var self = this;
 
   var currentBuild = self._prebuild();
-  webmake(self.entryPoint, {sourceMap: true, cache: true}, function(err, output) {
-    // TODO: Validate each file individually to get proper line numbers
-    // HACK: Workaround to report syntax errors before reaching the eval
-    // expression in the browser, which blows up without any helpful context.
-    // This still doesn't give correct line numbers, but does report it early
-    // Waiting on http://github.com/medikoo/modules-webmake/issues/47
-    webmake(self.entryPoint, {cache: false}, function(err, rawOutput) {
-      // Make build errors human-readable
-      if (err) {
-        err = self._formatBuildError(err);
-      }
 
-      // Validate JavaScript
-      if (!err) {
-        try {
-          var syntax = esprima.parse(rawOutput, {tolerant: true});
-          if (syntax.errors.length !== 0) {
-            err = new Error(syntax.errors.map(function(err) {
-              return self._translateSyntaxErrorFix(err, rawOutput).message;
-            }).join('\n'));
-          }
-        } catch (e) {
-          err = self._translateSyntaxErrorFix(e, rawOutput);
+  webmake(self.entryPoint, {
+    sourceMap: true,
+    cache: true,
+    transform: function(filename, code) {
+      // Validate JavaScript file
+      var err = null;
+      try {
+        var syntax = esprima.parse(code, {tolerant: true});
+        if (syntax.errors.length !== 0) {
+          err = new Error(syntax.errors.map(function(err) {
+            return self._formatSyntaxError(err, filename, code).message;
+          }).join('\n\n'));
         }
+      } catch (e) {
+        err = self._formatSyntaxError(e, filename, code);
+      }
+      if (err) {
+        throw err;
       }
 
-      // Handle post-build only if this is the latest build
-      if (currentBuild === self._latestBuild) {
-        self._postbuild(err, output);
-      }
+      return code;
+    }
+  }, function(err, output) {
+    // Make build errors human-readable
+    if (err) {
+      err = self._formatBuildError(err);
+    }
 
-      // Always call callback of current build
-      if (typeof callback === 'function') {
-        callback(err, output);
-      }
-    });
+    // Handle post-build only if this is the latest build
+    if (currentBuild === self._latestBuild) {
+      self._postbuild(err, output);
+    }
+
+    // Always call callback of current build
+    if (typeof callback === 'function') {
+      callback(err, output);
+    }
   });
 };
 
