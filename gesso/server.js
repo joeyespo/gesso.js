@@ -14,13 +14,11 @@ var Watcher = watcher.Watcher;
 function createApp(builder) {
   // Express application
   var app = express();
+
   // Attach watcher
   app.watcher = watcher || null;
-  // Middleware
-  app.use(express.static(path.join(__dirname, 'public')));
-  // Configure extensions
-  nunjucks.configure(path.join(__dirname, 'views'));
 
+  // Log all requests
   app.use(function(req, res, next) {
     next();
     console.log(chalk.gray([
@@ -31,6 +29,12 @@ function createApp(builder) {
       '-',
     ].join(' ')));
   });
+
+  // Middleware
+  app.use(express.static(path.join(__dirname, 'public')));
+
+  // Configure extensions
+  nunjucks.configure(path.join(__dirname, 'views'));
 
   // Routes
   app.get('/', function(req, res) {
