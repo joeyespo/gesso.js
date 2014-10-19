@@ -48,6 +48,7 @@ function createApp(builder) {
 
       var gessoBuildError = err ? (err.message || String(err)) + os.EOL : null;
 
+      res.type('html');
       res.end(nunjucks.render('index.html', {
         gessoScript: '/gesso-bundle.js',
         gessoProjectName: builder.projectName,
@@ -60,6 +61,7 @@ function createApp(builder) {
   });
 
   app.get('/gesso-bundle.js', function(req, res) {
+    res.type('js');
     builder.ready(function(err, output) {
       res.end(output || '');
     });
