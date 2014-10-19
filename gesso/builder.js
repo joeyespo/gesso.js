@@ -81,44 +81,54 @@ Builder.prototype._postbuild = function(err, output) {
     }
   }
 };
-Builder.prototype._translateIOError = function(err) {
-  switch(err.errno) {
-  case 28:
-    return new Error('Entry point must be a file, not a directory: ' + this.entryPoint);
-  case 34:
-    return new Error('Entry point not found: ' + this.entryPoint);
-  default:
-    return new Error('Could not run build: ' + (err.message || String(err)) + ' (errno: ' + err.errno + ')');
+Builder.prototype._formatBuildError = function(err) {
+  // Format IO error
+  if (err.errno) {
+    switch(err.errno) {
+    case 28:
+      return new Error('IOError: Entry point must be a file, not a directory: ' + this.entryPoint);
+    case 34:
+      return new Error('Entry point not found: ' + this.entryPoint);
+    default:
+      return new Error('IOError: ' + (err.message || String(err)) + ' (errno: ' + err.errno + ')');
+    }
   }
-};
-Builder.prototype._translatePreprocessError = function(error) {
-  var filename = error.message;
-  var lineNumber = 0;
 
-  var lineIndex = filename.indexOf(':');
-  if (lineIndex !== -1) {
-    var lineNumberIndex = filename.lastIndexOf(' ', lineIndex);
-    if (lineNumberIndex !== -1) {
-      lineNumber = filename.substring(lineNumberIndex + 1, lineIndex);
+  // Format webmake error
+  if (err.code) {
+    switch(err.code) {
+    case 'AST_ERROR':
+      var filename = err.message;
+      var lineNumber = 0;
+
+      var lineIndex = filename.indexOf(':');
+      if (lineIndex !== -1) {
+        var lineNumberIndex = filename.lastIndexOf(' ', lineIndex);
+        if (lineNumberIndex !== -1) {
+          lineNumber = filename.substring(lineNumberIndex + 1, lineIndex);
+        }
+        filename = filename.substr(lineIndex + 1).trim();
+      }
+      if (err.origin.description) {
+        var errorIndex = filename.indexOf(err.origin.description);
+        if (errorIndex !== -1) {
+          filename = filename.substr(errorIndex + err.origin.description.length).trim();
+        }
+      }
+      var inIndex = filename.indexOf('in');
+      if (inIndex !== -1) {
+        filename = filename.substr(inIndex + 2).trim();
+      }
+      return new Error([
+        filename + ':' + lineNumber,
+        '',
+        'WebmakeError: ' + err.origin.description || err.message,
+      ].join('\n'));
+
+    default:    // 'DYNAMIC_REQUIRE', 'INVALID_TRANSFORM', 'EXTENSION_NOT_INSTALLED'
+      return err;
     }
-    filename = filename.substr(lineIndex + 1).trim();
   }
-  if (error.origin.description) {
-    var errorIndex = filename.indexOf(error.origin.description);
-    if (errorIndex !== -1) {
-      filename = filename.substr(errorIndex + error.origin.description.length).trim();
-    }
-  }
-  var inIndex = filename.indexOf('in');
-  if (inIndex !== -1) {
-    filename = filename.substr(inIndex + 2).trim();
-  }
-  console.log(filename + ':' + lineNumber);
-  return new Error([
-    filename + ':' + lineNumber,
-    '',
-    'SyntaxError: ' + error.origin.description || error.message,
-  ].join('\n'));
 };
 // HACK: Adjust for line number until files can be checked individually
 Builder.prototype._translateSyntaxErrorFix = function(error, output) {
@@ -198,14 +208,9 @@ Builder.prototype.build = function(callback) {
     // This still doesn't give correct line numbers, but does report it early
     // Waiting on http://github.com/medikoo/modules-webmake/issues/47
     webmake(self.entryPoint, {cache: false}, function(err, rawOutput) {
-      // Translate webmake errors into human-readable build errors
-      if (err && err.errno) {
-        err = self._translateIOError(err);
-      }
-
-      // Translate webmake errors into human-readable build errors
-      if (err && err.origin) {
-        err = self._translatePreprocessError(err);
+      // Make build errors human-readable
+      if (err) {
+        err = self._formatBuildError(err);
       }
 
       // Validate JavaScript
