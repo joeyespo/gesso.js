@@ -16,7 +16,7 @@ h1 {
   font-size: 12px;
   width: 640px;
   height: 480px;
-  color: red;
-  white-space: nowrap;
+  color: darkred;
+  white-space: pre;
   overflow: auto;
 }
