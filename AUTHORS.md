@@ -1,12 +1,12 @@
 Authors
 =======
 
-[Gesso][] is written and maintained by [Joe Esposito][joeyespo],
-along with the following contributors:
+[Gesso.js][] is written and maintained by [Joe Esposito][@joeyespo], along with
+the following contributors:
 
-- Steve McCarthy ([@ifo][])
+- [Steve McCarthy][@ifo]
 
 
-[gesso]: README.md
-[joeyespo]: http://github.com/joeyespo
+[gesso.js]: README.md
+[@joeyespo]: http://github.com/joeyespo
 [@ifo]: http://github.com/ifo
