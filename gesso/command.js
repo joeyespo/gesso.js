@@ -59,7 +59,9 @@ function main(argv) {
   switch(command) {
   case 'bundle':
   case 'b':
-    bundler.bundle(options['--out']);
+    bundler.bundle({
+      outputFile: options['--out']
+    });
     break;
 
   case 'serve':

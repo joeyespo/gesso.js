@@ -55,12 +55,12 @@ function mkdirs(dir, callback) {
 }
 
 
-function bundle(outputFile, packagePath, callback) {
+function bundle(options, callback) {
+  options = options || {};
+
   // Create builder and run build
-  var builder = new Builder(packagePath);
-  if (!outputFile) {
-    outputFile = path.join(builder.path, DEFAULT_BUNDLE_FILE);
-  }
+  var builder = new Builder(options.packagePath);
+  var outputFile = options.outputFile || path.join(builder.path, DEFAULT_BUNDLE_FILE);
 
   // Run the build
   console.log('Building', path.relative('.', outputFile) + '...');
