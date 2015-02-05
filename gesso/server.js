@@ -1,8 +1,10 @@
 var os = require('os');
 var path = require('path');
+var moment = require('moment');
 var chalk = require('chalk');
 var nunjucks = require('nunjucks');
 var express = require('express');
+var morgan = require('morgan');
 var builder = require('./builder');
 var watcher = require('./watcher');
 var settings = require('./settings');
@@ -17,19 +19,23 @@ function createApp(builder) {
   // Attach watcher
   app.watcher = watcher || null;
 
-  // Log all requests
-  app.use(function(req, res, next) {
-    next();
-    console.log(chalk.gray([
-      '[' + new Date().toISOString().split('.')[0].replace('T', ' ') + ']',
-      res.statusCode + ' -',
-      '"' + req.method + ' ' + req.url + ' HTTP/' + req.httpVersion + '"',
-      res.statusCode,
-      '-',
-    ].join(' ')));
-  });
-
   // Middleware
+  app.use(morgan(function (tokens, req, res) {
+    var status = res.statusCode;
+    var color;
+    if (status === 404) { color = 33; }       // yellow
+    else if (status === 304) { color = 36; }  // cyan
+    else if (status >= 500) { color = 95; }   // magenta
+    else if (status >= 400) { color = 91; }   // red
+    else if (status >= 300) { color = 32; }   // green
+    else { color = 90; }                      // dark gray (gray = 37)
+    return ('\u001b[' + color + 'm' +
+      ('[' + moment().format('DD/MMM/YYYY HH:mm:ss') + ']') + ' ' +
+      (tokens.method(req, res, 'undefined') || '-') + ' ' +
+      (tokens.url(req, res, 'undefined') || '-') + ' ' +
+      (tokens.status(req, res, 'undefined') || '-') + ' ' +
+      (tokens.res(req, res, 'content-length') || '-') + '\u001b[0m');
+  }));
   app.use(express.static(path.join(__dirname, 'public')));
 
   // Configure extensions
@@ -64,6 +70,13 @@ function createApp(builder) {
     builder.ready(function(err, output) {
       res.end(output || '');
     });
+  });
+
+  // Log failed requests
+  app.use(function(err, req, res, next) {
+    console.log(res.statusCode);
+    console.log(chalk.red(err));
+    next();
   });
 
   return app;
