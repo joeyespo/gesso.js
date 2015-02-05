@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>{% block title %}{{ gessoProjectName }}{% endblock %}</title>
+  <style>
+    body { font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; height: 100%; min-height: 100%; }
+    h1 { text-align: center; font-size: 36px; margin-top: 20px; margin-bottom: 10px; font-weight: 500; line-height: 1.1; }
+    canvas { display: block; margin: 12px auto; border: 1px solid rgb(221, 221, 221); }
+    .container { width: 1170px; margin: 0 auto; }
+    .powered-by { color: #ccc; font-size: 12px; text-align: center; }
+    .powered-by a { color: #ccc; }
+  </style>
+  <!--[if lt IE 9]><script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.2/html5shiv.min.js></script><![endif]-->
+</head>
+<body>
+  <div class="container">
+    <h1>{{ gessoProjectName }}</h1>
+    <canvas id="{{ canvasId }}" width="{{ canvasWidth }}" height="{{ canvasHeight }}"></canvas>
+    <p class="powered-by">Powered by <a href="http://gessojs.com" target="_blank">Gesso</a></p>
+  </div>
+  <script src="{{ gessoScript }}"></script>
+</body>
+</html>

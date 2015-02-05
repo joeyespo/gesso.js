@@ -1,7 +1,9 @@
 var fs = require('fs');
 var path = require('path');
 var chalk = require('chalk');
+var nunjucks = require('nunjucks');
 var builder = require('./builder');
+var settings = require('./settings');
 var Builder = builder.Builder;
 
 
@@ -62,6 +64,9 @@ function bundle(options, callback) {
   var builder = new Builder(options.packagePath);
   var outputFile = options.outputFile || path.join(builder.path, DEFAULT_BUNDLE_FILE);
 
+  // Configure extensions
+  nunjucks.configure(path.join(__dirname, 'views'));
+
   // Run the build
   console.log('Building', path.relative('.', outputFile) + '...');
   builder.build(function(err, output) {
@@ -69,7 +74,8 @@ function bundle(options, callback) {
       return _error(callback, err);
     }
 
-    mkdirs(path.dirname(outputFile), function(err) {
+    var outputDir = path.dirname(outputFile);
+    mkdirs(outputDir, function(err) {
       if (err) {
         return _error(callback, err, 'Could not create output directory');
       }
@@ -79,7 +85,24 @@ function bundle(options, callback) {
           return _error(callback, err, 'Could not write output file');
         }
 
-        _callback(callback);
+        if (options.noIndex) {
+          return _callback(callback);
+        }
+
+        var index = nunjucks.render('dist/index.html', {
+          gessoScript: path.basename(outputFile),
+          gessoProjectName: builder.projectName,
+          canvasId: settings.CANVAS_ID,
+          canvasWidth: settings.CANVAS_WIDTH,
+          canvasHeight: settings.CANVAS_HEIGHT
+        });
+        fs.writeFile(path.join(outputDir, 'index.html'), index, function(err) {
+          if (err) {
+            return _error(callback, err, 'Could not write index file');
+          }
+
+          return _callback(callback);
+        });
       });
     });
   });

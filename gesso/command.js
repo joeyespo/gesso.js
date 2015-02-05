@@ -25,7 +25,8 @@ var doc = [
   '  gesso bundle [options]',
   '    Builds your app and bundles it into the output file (dist/gesso-bundle.js by default).',
   '    Aliases: b',
-  '    --out=<path>, -o    (Default: dist/gesso-bundle.js)'
+  '    --out=<path>, -o    (Default: dist/gesso-bundle.js)',
+  '    --no-index          Does not create dist/index.html'
 ].join('\n');
 
 
@@ -60,7 +61,8 @@ function main(argv) {
   case 'bundle':
   case 'b':
     bundler.bundle({
-      outputFile: options['--out']
+      outputFile: options['--out'],
+      noIndex: options['--no-index']
     });
     break;
 
