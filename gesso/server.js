@@ -49,23 +49,15 @@ function createApp(builder, logAll) {
   // Routes
   app.get('/', function(req, res) {
     builder.ready(function(err) {
-      var canvasId = settings.CANVAS_ID;
-      var canvasWidth = settings.CANVAS_WIDTH;
-      var canvasHeight = settings.CANVAS_HEIGHT;
-
       // TODO: Get values from project settings
-      // TODO: Provide errors and build content
-
-      var gessoBuildError = err ? (err.message || String(err)) + os.EOL : null;
-
       res.type('html');
       res.end(nunjucks.render('index.html', {
         gessoScript: '/gesso-bundle.js',
         gessoProjectName: builder.projectName,
-        gessoBuildError: gessoBuildError,
-        canvasId: canvasId,
-        canvasWidth: canvasWidth,
-        canvasHeight: canvasHeight
+        gessoBuildError: err ? (err.message || String(err)) + os.EOL : null,
+        canvasId: settings.CANVAS_ID,
+        canvasWidth: settings.CANVAS_WIDTH,
+        canvasHeight: settings.CANVAS_HEIGHT
       }));
     });
   });
