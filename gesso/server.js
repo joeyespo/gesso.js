@@ -83,12 +83,22 @@ function createApp(builder) {
 }
 
 
-function serve(port, host, packagePath) {
+function serve(port, host, options) {
+  if (typeof options === 'undefined') {
+    if (typeof host === 'object') {
+      options = host;
+      host = undefined;
+    } else if (typeof host === 'undefined' && typeof port === 'object') {
+      options = port;
+      port = undefined;
+    }
+  }
+
   port = port || settings.PORT;
   host = host || settings.HOST;
 
   // Create builder and watcher
-  var builder = new Builder(packagePath);
+  var builder = new Builder(options.packagePath);
   var watcher = new Watcher(builder);
 
   // Create the app
