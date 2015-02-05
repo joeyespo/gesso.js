@@ -6,7 +6,6 @@ var express = require('express');
 var builder = require('./builder');
 var watcher = require('./watcher');
 var settings = require('./settings');
-// Unpack
 var Builder = builder.Builder;
 var Watcher = watcher.Watcher;
 

@@ -2,7 +2,6 @@ var fs = require('fs');
 var path = require('path');
 var chalk = require('chalk');
 var builder = require('./builder');
-// Unpack
 var Builder = builder.Builder;
 
 
