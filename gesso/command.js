@@ -20,6 +20,7 @@ var doc = [
   '    Aliases: server, s',
   '    --port=<port>, -p   (Default: 5000)',
   '    --host=<host>       (Default: 0.0.0.0)',
+  '    --log-all           Logs all HTTP requests',
   '',
   '  gesso bundle [options]',
   '    Builds your app and bundles it into the output file (dist/gesso-bundle.js by default).',
@@ -64,7 +65,9 @@ function main(argv) {
   case 'serve':
   case 'server':
   case 's':
-    server.serve(options['--port'], options['--host']);
+    server.serve(options['--port'], options['--host'], {
+      logAll: options['--log-all']
+    });
     break;
 
   default:

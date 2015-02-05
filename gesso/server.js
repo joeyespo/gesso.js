@@ -7,12 +7,13 @@ var express = require('express');
 var morgan = require('morgan');
 var builder = require('./builder');
 var watcher = require('./watcher');
+var util = require('./util');
 var settings = require('./settings');
 var Builder = builder.Builder;
 var Watcher = watcher.Watcher;
 
 
-function createApp(builder) {
+function createApp(builder, logAll) {
   // Express application
   var app = express();
 
@@ -35,6 +36,10 @@ function createApp(builder) {
       (tokens.url(req, res, 'undefined') || '-') + ' ' +
       (tokens.status(req, res, 'undefined') || '-') + ' ' +
       (tokens.res(req, res, 'content-length') || '-') + '\u001b[0m');
+  }, {
+    skip: function (req, res) {
+      return !logAll && util.startsWithAny(req.url, ['/images', '/scripts', '/styles', '/vendor']);
+    }
   }));
   app.use(express.static(path.join(__dirname, 'public')));
 
@@ -85,6 +90,7 @@ function createApp(builder) {
 
 function serve(port, host, options) {
   if (typeof options === 'undefined') {
+    options = {};
     if (typeof host === 'object') {
       options = host;
       host = undefined;
@@ -102,7 +108,7 @@ function serve(port, host, options) {
   var watcher = new Watcher(builder);
 
   // Create the app
-  var app = createApp(builder);
+  var app = createApp(builder, options.logAll);
 
   // Run first build
   builder.build();
