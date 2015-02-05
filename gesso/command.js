@@ -25,7 +25,7 @@ var doc = [
   '  gesso bundle [options]',
   '    Builds your app and bundles it into the output file (dist/gesso-bundle.js by default).',
   '    Aliases: b',
-  '    --out=<path>        (Default: dist/gesso-bundle.js)',
+  '    --out=<path>, -o    (Default: dist/gesso-bundle.js)'
 ].join('\n');
 
 
