@@ -39,7 +39,7 @@ $ npm install -g gesso
 Usage
 -----
 
-1. Initialize a new package and add Gesso as a dependency
+1. Initialize a new package and add the Gesso runtime as a dependency:
 
     ```bash
     $ npm init
@@ -64,7 +64,7 @@ Usage
 
   *Note: Check out the [hello example][] for a complete project for this code.*
 
-3. Build, serve, and watch for changes
+3. Build, serve, and watch for changes:
 
     ```bash
     $ gesso server
