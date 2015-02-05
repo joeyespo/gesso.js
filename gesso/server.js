@@ -88,20 +88,8 @@ function createApp(builder, logAll) {
 }
 
 
-function serve(port, host, options) {
-  if (typeof options === 'undefined') {
-    options = {};
-    if (typeof host === 'object') {
-      options = host;
-      host = undefined;
-    } else if (typeof host === 'undefined' && typeof port === 'object') {
-      options = port;
-      port = undefined;
-    }
-  }
-
-  port = port || settings.PORT;
-  host = host || settings.HOST;
+function serve(options) {
+  options = options || {};
 
   // Create builder and watcher
   var builder = new Builder(options.packagePath);
@@ -114,6 +102,8 @@ function serve(port, host, options) {
   builder.build();
 
   // Run the server
+  var port = options.port || settings.PORT;
+  var host = options.host || settings.HOST;
   app.listen(port, host, function() {
     console.log(' * Listening on http://%s:%d/', host, port);
 

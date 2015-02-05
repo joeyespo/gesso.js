@@ -65,7 +65,9 @@ function main(argv) {
   case 'serve':
   case 'server':
   case 's':
-    server.serve(options['--port'], options['--host'], {
+    server.serve({
+      host: options['--host'],
+      port: options['--port'],
       logAll: options['--log-all']
     });
     break;
