@@ -4,10 +4,10 @@ var moment = require('moment');
 var chalk = require('chalk');
 var nunjucks = require('nunjucks');
 var express = require('express');
+var bodyParser = require('body-parser');
 var morgan = require('morgan');
 var builder = require('./builder');
 var watcher = require('./watcher');
-var util = require('./util');
 var settings = require('./settings');
 var Builder = builder.Builder;
 var Watcher = watcher.Watcher;
@@ -21,6 +21,7 @@ function createApp(builder, logAll) {
   app.watcher = watcher || null;
 
   // Middleware
+  app.use(bodyParser.urlencoded({extended: false}));
   app.use(morgan(function (tokens, req, res) {
     var status = res.statusCode;
     var color;
@@ -38,7 +39,12 @@ function createApp(builder, logAll) {
       (tokens.res(req, res, 'content-length') || '-') + '\u001b[0m');
   }, {
     skip: function (req, res) {
-      return !logAll && util.startsWithAny(req.url, ['/images', '/scripts', '/styles', '/vendor']);
+      if (req.url.lastIndexOf('/log', 0) === 0) {
+        return true;
+      }
+      return !logAll && (
+        req.url.lastIndexOf('/images', 0) === 0 || req.url.lastIndexOf('/scripts', 0) === 0 ||
+        req.url.lastIndexOf('/styles', 0) === 0 || req.url.lastIndexOf('/vendor', 0) === 0);
     }
   }));
   app.use(express.static(path.join(__dirname, 'public')));
@@ -67,6 +73,25 @@ function createApp(builder, logAll) {
     builder.ready(function(err, output) {
       res.end(output || '');
     });
+  });
+
+  app.post('/log', function(req, res) {
+    var level = req.body.level;
+    var messages = req.body.message.split('\n');
+    for (var index = 0; index < messages.length; index++) {
+      var message = '[' + moment().format('DD/MMM/YYYY HH:mm:ss') + '] Client: ' + messages[index];
+      if (level === 'error') {
+        message = chalk.bold.red(message);
+      } else if (level === 'warn') {
+        message = chalk.bold.yellow(message);
+      } else if (level === 'info') {
+        message = chalk.bold.cyan(message);
+      } else {
+        message = chalk.white(message);
+      }
+      console.log(message);
+    }
+    res.end('');
   });
 
   return app;

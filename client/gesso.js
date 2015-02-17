@@ -1,6 +1,7 @@
 var Controller = require('./controller');
 var Delegate = require('./delegate');
 var lowLevel = require('./lowLevel');
+var logging = require('./logging');
 
 
 function Gesso(options) {
@@ -25,6 +26,10 @@ Gesso.cancelAnimationFrame = lowLevel.cancelAnimationFrame;
 Gesso.getCanvas = lowLevel.getCanvas;
 Gesso.getContext2D = lowLevel.getContext2D;
 Gesso.getWebGLContext = lowLevel.getWebGLContext;
+Gesso.error = logging.error;
+Gesso.info = logging.info;
+Gesso.log = logging.log;
+Gesso.warn = logging.warn;
 Gesso.prototype.initialize = function initialize() {
   if (this._initialized) {
     return;

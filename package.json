@@ -21,6 +21,7 @@
     "node": ">= 0.10.0"
   },
   "dependencies": {
+    "body-parser": "^1.11.0",
     "chalk": "^0.5.1",
     "chokidar": "^0.8.4",
     "docopt": "^0.4.0",
