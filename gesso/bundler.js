@@ -17,7 +17,7 @@ function _callback(callback, err) {
 
 function _error(callback, err, header) {
   if (err) {
-    console.log(chalk.red((header ? header + ': ' : '') + (err.message || String(err))));
+    console.log(chalk.bold.magenta((header ? header + ': ' : '') + (err.message || String(err))));
   }
   return _callback(callback, err);
 }
