@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "author": "Joe Esposito <joe@joeyespo.com>",
   "description": "The example from the Gesso README.",
-  "homepage": "http://github.com/joeyespo/gessojs",
+  "homepage": "http://github.com/gessojs/gessojs",
   "license": "MIT",
   "private": true,
   "gesso": {
