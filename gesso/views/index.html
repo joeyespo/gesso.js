@@ -30,6 +30,8 @@
           message = err + '\n' + message;
         }
       }
+      // TODO: Get this a better way?
+      gesso.error(message);
       $('.generated-canvas').hide();
       var value = errorInfo.val();
       if (value) {
