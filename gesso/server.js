@@ -31,7 +31,7 @@ function createApp(builder, logAll) {
     else if (status >= 300) { color = 32; }   // green
     else { color = 90; }                      // dark gray (gray = 37)
     return ('\u001b[' + color + 'm' +
-      ('[' + moment().format('DD/MMM/YYYY HH:mm:ss') + ']') + ' ' +
+      ('[' + moment().format('DD/MMM/YYYY HH:mm:ss') + '] ') +
       (tokens.method(req, res, 'undefined') || '-') + ' ' +
       (tokens.url(req, res, 'undefined') || '-') + ' ' +
       (tokens.status(req, res, 'undefined') || '-') + ' ' +
@@ -67,13 +67,6 @@ function createApp(builder, logAll) {
     builder.ready(function(err, output) {
       res.end(output || '');
     });
-  });
-
-  // Log failed requests
-  app.use(function(err, req, res, next) {
-    console.log(res.statusCode);
-    console.log(chalk.red(err));
-    next();
   });
 
   return app;
