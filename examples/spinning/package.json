@@ -4,7 +4,7 @@
   "author": "Joe Esposito <joe@joeyespo.com>",
   "description": "The example from the Gesso README.",
   "homepage": "http://github.com/joeyespo/gessojs",
-  "license": "ISC",
+  "license": "MIT",
   "private": true,
   "main": "index.js",
   "scripts": {
