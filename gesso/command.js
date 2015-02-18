@@ -18,7 +18,7 @@ var doc = [
   '  gesso serve [options]',
   '    Builds and serves your app, rebuilding on file changes.',
   '    Aliases: server, s',
-  '    --port=<port>, -p   (Default: 5000)',
+  '    --port=<port>, -p   (Default: 63550)',
   '    --host=<host>       (Default: 0.0.0.0)',
   '    --log-all           Logs all HTTP requests',
   '',
