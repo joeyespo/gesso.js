@@ -30,8 +30,9 @@
           message = err + '\n' + message;
         }
       }
-      // TODO: Get this a better way?
-      gesso.error(message);
+      if (window.Gesso && window.Gesso.error) {
+        window.Gesso.error(message);
+      }
       $('.generated-canvas').hide();
       var value = errorInfo.val();
       if (value) {
