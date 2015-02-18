@@ -23,6 +23,8 @@
     }
 
     window.onerror = function(message, url, lineNumber, column, err) {
+      // TODO: Request url and show the current line of the error
+
       if (err && err.stack) {
         message = err.stack;
         if (message.indexOf(err) !== 0) {

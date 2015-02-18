@@ -192,10 +192,14 @@ Builder.prototype.build = function(callback) {
 
   var currentBuild = self._prebuild();
 
+  // TODO: Add bootstrap code to check if entry point exported a Gesso object
+  //       and if so, run .start() on it with the page's only canvas (or matching ID)
   webmake(self.entryPoint, {
     sourceMap: true,
     cache: true,
     transform: function(filename, code) {
+      // TODO: Use Gesso plugins to provide custom transforms
+      //       e.g. CoffeeScript, PureScript, etc
       // Validate JavaScript file
       var err = null;
       try {

@@ -6,6 +6,7 @@
 
 
 function _send(level, args) {
+  // TODO: Inspect object instead of sending [object Object]
   // TODO: Remove the implied jQuery dependency
   $.post('/log', {
     level: level,
