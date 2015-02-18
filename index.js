@@ -1,5 +1,5 @@
 // Gesso Entry Point
-// Detect whether this is called from a built bundle from the browser, or as the build project.
+// Detect whether this is called from the browser, or from the CLI.
 
 
 if (typeof window === 'undefined') {

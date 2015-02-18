@@ -97,12 +97,12 @@ $ gesso serve [options]
 - `--host <address>`: The host to serve from (default `0.0.0.0`)
 
 
-#### bundle
+#### build
 
 Builds your app and bundles it into the output file (dist/gesso-bundle.js by default).
 
 ```bash
-$ gesso bundle [options]
+$ gesso build [options]
 ```
 
 *Aliases: `b`*
@@ -199,7 +199,7 @@ Deploying
 1. Bundle your project
 
     ```bash
-    $ gesso bundle
+    $ gesso build
     ```
 
 2. Move the generated `dist/gesso-bundle.js` to your website
