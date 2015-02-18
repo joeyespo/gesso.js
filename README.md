@@ -130,73 +130,15 @@ the front-end. If you need them, take a look at [Browserify][].
 API
 ---
 
-*Note: This is a work-in-progress.*
+*Detailed documentation is currently being written and will be live by version 1.0.*
 
-In addition to the CLI, Gesso provides a client-side API. This provides access
-to the target `<canvas>` element, cross-browser polyfills, and canvas helpers.
-
-
-#### getCanvas
-
-Gets the target canvas from the host page. You can then use the [canvas API][]
-on the returned object.
-
-```js
-gesso.getCanvas()
-```
-
-
-#### getContext2D
-
-Convenience function to get the target canvas's [2D context][].
-
-```js
-gesso.getContext2D()
-```
-
-
-#### getWebGLContext
-
-Convenience function to get the target canvas's [WebGL context][].
-
-```js
-gesso.getWebGLContext()
-```
-
-
-#### requestAnimationFrame
-
-Requests an animation frame. This works just like [the native function][raf],
-but is [cross-browser][raf.js]. This returns an ID that can be passed to
-`cancelAnimationFrame` to cancel the callback request.
-
-See the [spinning rectangles example][] for more.
-
-```js
-gesso.requestAnimationFrame(callback)
-```
-
-- `callback` : `function(timestamp)` - Called each animation frame. `timestamp`
-  is a `double` that indicates the current time offset, in milliseconds, when
-  the callbacks start firing.
-
-
-#### cancelAnimationFrame
-
-Cancels an animation frame previously requested with `requestAnimationFrame`.
-This works just like [the native function][craf], but is [cross-browser][raf.js].
-
-```js
-gesso.cancelAnimationFrame(requestID)
-```
-
-- `requestID` : `int` - The ID returned by `requestAnimationFrame`.
+*Please take a look at [the spinning example's index.js][spinning/index.js] for now.*
 
 
 Deploying
 ---------
 
-1. Bundle your project
+1. Build your project
 
     ```bash
     $ gesso build
@@ -243,13 +185,7 @@ Use this software often? Please consider supporting me on
 [main]: http://npmjs.org/doc/files/package.json.html
 [webmake]: http://github.com/medikoo/modules-webmake
 [browserify]: http://github.com/substack/node-browserify
-[canvas API]: http://developer.mozilla.org/en-US/docs/Web/API/Canvas_API
-[2D context]: http://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D
-[WebGL context]: http://developer.mozilla.org/en-US/docs/Web/API/WebGLRenderingContext
-[raf]: http://developer.mozilla.org/en-US/docs/Web/API/window.requestAnimationFrame
-[spinning rectangles example]: examples/spinning/
-[craf]: http://developer.mozilla.org/en-US/docs/Web/API/window.cancelAnimationFrame
-[raf.js]: http://gist.github.com/paulirish/1579671
-[DOMHighResTimeStamp]: http://developer.mozilla.org/en-US/docs/Web/API/DOMHighResTimeStamp
+[examples]: https://github.com/gessojs/gessojs/tree/master/examples
+[spinning/index.js]: http://github.com/gessojs/gessojs/blob/master/examples/spinning/index.js
 [authors.md]: AUTHORS.md
 [twitter]: http://twitter.com/joeyespo
