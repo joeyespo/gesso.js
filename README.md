@@ -2,10 +2,8 @@ Gesso.js
 ========
 
 Gesso lets you create [&lt;canvas&gt;][] applications for the browser using
-powerful server-side constructs you're used to, such as [npm][]
+the powerful server-side tools you're used to, such as [npm][]
 and [require()][], all without writing any HTML or CSS.
-
-![Teaser](artwork/teaser.png)
 
 
 What?
@@ -18,7 +16,9 @@ Gesso is a command-line tool that:
 - Lets you **deploy** by **adding a single** `<script>` element to your website
 
 Gesso also includes an optional base library, and a plugin system to handle
-ambitious canvas projects. *Note: These are currently works-in-progress.*
+ambitious canvas projects.
+
+![Teaser](artwork/teaser.png)
 
 
 Why?
@@ -172,7 +172,7 @@ Contributing
 If your PR has been waiting a while, feel free to [ping me on Twitter][twitter].
 
 Use this software often? Please consider supporting me on
-<a href="http://gratipay.com/joeyespo" title="Thank you!">
+<a href="http://gratipay.com/joeyespo" target="_blank" title="Thank you!">
   <img align="center" style="margin-bottom:1px" src="http://joeyespo.com/images/gratipay-button.png" alt="Gratipay">
 </a>
 
