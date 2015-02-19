@@ -1,16 +1,7 @@
 {
-  "name": "gesso-example-spinning",
+  "name": "spinning-example",
   "version": "0.0.1",
-  "author": "Joe Esposito <joe@joeyespo.com>",
-  "description": "The example from the Gesso README.",
-  "homepage": "http://github.com/gessojs/gessojs",
-  "license": "MIT",
   "private": true,
-  "main": "index.js",
-  "scripts": {
-    "server": "gesso serve",
-    "build": "gesso build"
-  },
   "dependencies": {
     "gesso": "^0.8.0"
   }

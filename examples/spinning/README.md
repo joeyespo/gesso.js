@@ -1,7 +1,7 @@
 Spinning - Gesso Example
 ========================
 
-Renders a set of spinning rectangles to demonstrate how to do basic animations.
+Renders a set of spinning rectangles to demonstrate how to do basic animation.
 
 
 Installation
@@ -20,14 +20,14 @@ $ npm install
 ```
 
 
-Usage
------
+Running
+-------
 
 ```bash
 $ gesso serve
 ```
 
-Then visit [http://localhost:63550](http://localhost:63550/).
+Now visit [http://localhost:63550](http://localhost:63550/).
 
 
 Screenshot
