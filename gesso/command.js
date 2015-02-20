@@ -58,7 +58,7 @@ function main(argv) {
   var command = options['<command>'];
 
   switch(command) {
-  case 'bundle':
+  case 'build':
   case 'b':
     bundler.bundle({
       outputFile: options['--out'],
@@ -88,7 +88,7 @@ function packagelessMain(argv) {
   var command = options['<command>'];
 
   switch(command) {
-  case 'bundle':
+  case 'build':
   case 'b':
     break;
 
