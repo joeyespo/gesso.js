@@ -3,6 +3,8 @@ Spinning - Gesso Example
 
 Renders a set of spinning rectangles to demonstrate how to do basic animation.
 
+![Screenshot](screenshot.png)
+
 
 Installation
 ------------
@@ -27,13 +29,7 @@ Running
 $ gesso serve
 ```
 
-Now visit [http://localhost:63550](http://localhost:63550/).
-
-
-Screenshot
-----------
-
-![Screenshot](screenshot.png)
+Now visit [http://localhost:63550](http://localhost:63550/)
 
 
 [the Gesso README]: ../../README.md

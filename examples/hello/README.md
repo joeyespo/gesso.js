@@ -3,6 +3,8 @@ Hello - Gesso Example
 
 An example project for code seen in the [the Gesso README][].
 
+![Screenshot](screenshot.png)
+
 
 Installation
 ------------
@@ -27,13 +29,7 @@ Running
 $ gesso serve
 ```
 
-Now visit [http://localhost:63550](http://localhost:63550/).
+Now visit [http://localhost:63550](http://localhost:63550/)
 
 
-Screenshot
-----------
-
-![Screenshot](screenshot.png)
-
-
-[the Gesso README]: ../../README.md
+[the Gesso README]: ../../README.md#usage
