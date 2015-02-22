@@ -39,14 +39,19 @@ $ npm install -g gesso
 Usage
 -----
 
-1. Initialize a new package and add the Gesso runtime as a dependency:
+1. Initialize a new package:
 
     ```bash
     $ npm init
+    ```
+
+2. Add Gesso as a dependency:
+
+    ```bash
     $ npm install -S gesso
     ```
 
-2. Create a new `index.js` file and add your code. For example:
+3. Create a new `index.js` file and add your code. For example:
 
     ```js
     // Get the canvas context
@@ -64,7 +69,7 @@ Usage
 
   *Note: Check out the [hello example][] for a complete project for this code.*
 
-3. Build, serve, and watch for changes:
+4. Build and serve:
 
     ```bash
     $ gesso server
