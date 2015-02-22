@@ -1,11 +1,23 @@
-// Get the canvas context
-var gesso = require('gesso');
-var ctx = gesso.getContext2D();
+var Gesso = require('gesso');
 
-// Draw two lines of text
-ctx.font = '36px Verdana';
-ctx.fillStyle = '#f34';
-ctx.fillText('Hello,', 123, 100);
-ctx.shadowColor = '#f0f';
-ctx.shadowBlur = 8;
-ctx.fillText('Browser Games!', 26, 150);
+var game = new Gesso();
+var t = 0;
+var x;
+
+game.update(function () {
+  t += 1;
+  var center = (game.width - 300) / 2;
+  x = center + Math.sin(t / 15) * 20;
+});
+
+game.render(function (ctx) {
+  ctx.fillStyle = 'rgba(255, 255, 255, 0.2)';
+  ctx.fillRect(0, 0, game.width, game.height);
+
+  ctx.font = '36px Verdana';
+  ctx.fillStyle = '#f34';
+  ctx.fillText('Hello,', 270, 200);
+  ctx.fillText('Browser Games!', x, 252);
+});
+
+game.run();
