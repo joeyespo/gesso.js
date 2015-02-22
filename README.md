@@ -204,7 +204,6 @@ Use this software often? Please consider supporting me on
 [main]: http://npmjs.org/doc/files/package.json.html
 [webmake]: http://github.com/medikoo/modules-webmake
 [browserify]: http://github.com/substack/node-browserify
-[examples]: https://github.com/gessojs/gessojs/tree/master/examples
 [spinning/index.js]: http://github.com/gessojs/gessojs/blob/master/examples/spinning/index.js
 [authors.md]: AUTHORS.md
 [twitter]: http://twitter.com/joeyespo
