@@ -30,13 +30,23 @@ var doc = [
 ].join('\n');
 
 
-function exitWithHelp(version) {
-  console.log(version ? 'Gesso ' + pkg.version : doc);
+function exitWithHelp(showVersion, localVersion) {
+  if (showVersion) {
+    if (localVersion) {
+      console.log('version: ' + localVersion);
+      console.log('global: ' + pkg.version);
+    } else {
+      console.log('version: ' + pkg.version);
+    }
+    console.log('node: ' + process.version);
+  } else {
+    console.log(doc);
+  }
   process.exit(0);
 }
 
 
-function processArguments(argv) {
+function processArguments(argv, localVersion) {
   var args = {help: false};
   if (typeof argv !== 'undefined') {
     args.argv = argv;
@@ -47,15 +57,18 @@ function processArguments(argv) {
     exitWithHelp();
   }
   if (options['-v'] || options['--version']) {
-    exitWithHelp(true);
+    exitWithHelp(true, localVersion);
   }
   return options;
 }
 
 
-function main(argv) {
-  var options = processArguments(argv);
+function main(argv, modulePackage) {
+  var options = processArguments(argv, modulePackage.version);
   var command = options['<command>'];
+
+  // Always show local version
+  console.log('version: ' + modulePackage.version);
 
   switch(command) {
   case 'build':
@@ -84,8 +97,11 @@ function main(argv) {
 
 
 function packagelessMain(argv) {
-  var options = processArguments(argv);
+  var options = processArguments(argv, null);
   var command = options['<command>'];
+
+  // Always show global version
+  console.log('version: ' + pkg.version);
 
   switch(command) {
   case 'build':
@@ -116,7 +132,7 @@ function globalMain() {
     // Check for local installation and run it's main function,
     // or run packageless main if outside of a package
     if (env.modulePath) {
-      require(env.modulePath).main();
+      require(env.modulePath).main(undefined, env.modulePackage);
     } else {
       packagelessMain();
     }
