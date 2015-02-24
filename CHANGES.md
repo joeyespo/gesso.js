@@ -2,6 +2,19 @@ Gesso Changelog
 ===============
 
 
+Version 0.10.0 (2015-02-24)
+---------------------------
+
+- Enhancement: Allow inspection of Delegate's handlers and clean up
+- Enhancement: Always show the version when running Gesso, and show the locally installed version on `-v`
+- Enhancement: Switch to Browserify to allow requiring of built-in Node.js modules
+- Enhancement: Show Node.js-like errors in the browser, including the original stack trace and the source line
+- Bugfix: Use `gesso build` like the usage shows, instead of accepting the old `gesso bundle`
+- Bugfix: Add missing `bower` dependency to `package.json`
+- Readme: Separate out `npm install -S gesso` step
+- Readme: Update example code and `hello` project
+
+
 Version 0.9.0 (2015-02-18)
 --------------------------
 
