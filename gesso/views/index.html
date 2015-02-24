@@ -9,42 +9,99 @@
 
 
 {% block scripts %}
+  <script src="/vendor/stacktrace-js/dist/stacktrace.js"></script>
+  <script src="/vendor/source-map-support/browser-source-map-support.js"></script>
+  <script>sourceMapSupport.install();</script>
   <script>
-    var errorInfo = $('.error-info');
-    if (errorInfo.hasClass('build-error')) {
-      showError();
-    }
-
-    function showError() {
-      var value = errorInfo.val();
-      errorInfo.val('');
-      errorInfo.removeClass('hidden');
-      errorInfo.val(value).scrollTop(errorInfo[0].scrollHeight).focus();
-    }
-
-    window.onerror = function(message, url, lineNumber, column, err) {
-      // TODO: Request url and show the current line of the error
-
-      if (err && err.stack) {
-        message = err.stack;
-        if (message.indexOf(err) !== 0) {
-          message = '    ' + message.split('\n').join('\n    ').trim();
-          message = err + '\n' + message;
+    function showError(message) {
+      var value = $('.error-info').val();
+      if (message) {
+        if (value) {
+          value += '\n';
         }
+        value += message + '\n';
       }
+      $('.error-info').val('').removeClass('hidden').val(value);
+      $('.error-info').scrollTop($('.error-info').get(0).scrollHeight).focus();
+      $('.generated-canvas').hide();
+    }
+
+    // TODO: Remove once Browserify provides more granular column number mappings
+    var prepareStackTrace = Error.prepareStackTrace;
+    Error.prepareStackTrace = function (error, stack) {
+      if (stack && stack.length && stack.length > 0) {
+        frame = stack[0];
+        error.originalFileName = frame.getFileName() || frame.getScriptNameOrSourceURL();
+        error.originalPosition = frame.getPosition();
+      }
+      return prepareStackTrace(error, stack);
+    }
+
+    // TODO: Use sourceMapSupport.getErrorSource directly once Browserify provides more granular column number mappings
+    function getFixedErrorSource(err, stack, cb) {
+      // Fallback to sourceMapSupport.getErrorSource if prepareStackTrace workaround was not installed
+      if (!err.originalFileName) {
+        return cb(sourceMapSupport.getErrorSource(err));
+      }
+
+      // Get source code and extract the original line
+      // Note: This will only work as long as there's a 1-to-1 mapping between the original lines and the build's lines (e.g. not minified)
+      $.get(err.originalFileName, function (code) {
+        var frames = stack.split('\n');
+        var fileName = frames ? frames[0].replace(/^(.+)\((.+)\)$/gm, '$2') : err.originalFileName;
+        var start = code.lastIndexOf('\n', err.originalPosition) + 1;
+        var end = code.indexOf('\n', err.originalPosition) - 1;
+        source = (fileName + '\n' + code.substring(start, end) + '\n' +
+          new Array(err.originalPosition - start + 1).join(' ') + '^');
+        cb(source);
+      }, 'html').fail(function(xhr, textStatus, errorThrown) {
+        showError('Could not get source (' + textStatus + '): ' + xhr.responseText);
+        cb(null);
+      });
+    }
+
+    function reportError(message) {
+      // TODO: Remove this once node-source-map-support removes the leading newline
+      if (message && message.trim) {
+        message = message.trim();
+      }
+
+      // Send error to terminal
       if (window.Gesso && window.Gesso.error) {
         window.Gesso.error(message);
       }
-      $('.generated-canvas').hide();
-      var value = errorInfo.val();
-      if (value) {
-        value += '\n';
-      }
-      errorInfo.val(value + message + '\n');
-      showError();
-    };
-  </script>
 
+      // Show error in browser
+      showError(message);
+    }
+
+    window.onerror = function (message, url, lineNumber, column, err) {
+      if (!err) {
+        return reportError(message);
+      }
+
+      // Append formatted stack trace
+      var stack = null;
+      if (err.stack) {
+        // TODO: Use ($2:$3:$4) once Browserify provides more granular column number mappings
+        stack = (printStackTrace({e: err}).join('\n')
+          .replace(/^(.+)@(.+):(.+):(.+)$/gm, '    at $1 ($2:$3)'));
+        message = String(err) + '\n' + stack;
+      }
+
+      // Prepend error source, if available, and report the error
+      getFixedErrorSource(err, stack, function (source) {
+        if (source) {
+          message = source + '\n' + message;
+        }
+        reportError(message);
+      });
+    };
+
+    if ($('.error-info').hasClass('build-error')) {
+      showError('');
+    }
+  </script>
   {% if not gessoBuildError %}
     <script src="{{ gessoScript }}"></script>
   {% endif %}
@@ -54,9 +111,9 @@
 {% block page %}
   <div class="container">
     <h1>{{ gessoProjectName }}</h1>
+    <textarea class="error-info {{ 'build-error' if gessoBuildError else 'hidden' }}" wrap="off">{{ gessoBuildError }}</textarea>
     {% if not gessoBuildError %}
       <canvas id="{{ canvasId }}" class="generated-canvas" width="{{ canvasWidth }}" height="{{ canvasHeight }}"></canvas>
     {% endif %}
-    <textarea class="error-info {{ 'build-error' if gessoBuildError else 'hidden' }}" wrap="off">{{ gessoBuildError }}</textarea>
   </div>
 {% endblock %}
