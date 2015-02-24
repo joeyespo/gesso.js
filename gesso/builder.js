@@ -1,7 +1,8 @@
 var fs = require('fs');
 var path = require('path');
 var esprima = require('esprima');
-var webmake = require('webmake');
+var through = require('through');
+var browserify = require('browserify');
 
 
 var PACKAGE_FILE = 'package.json';
@@ -81,57 +82,6 @@ Builder.prototype._postbuild = function(err, output) {
     }
   }
 };
-Builder.prototype._formatBuildError = function(err) {
-  // Format IO error
-  if (err.errno) {
-    switch(err.errno) {
-    case 28:
-      return new Error('IOError: Entry point must be a file, not a directory: ' + this.entryPoint);
-    case 34:
-      return new Error('Entry point not found: ' + this.entryPoint);
-    default:
-      return new Error('IOError: ' + (err.message || String(err)) + ' (errno: ' + err.errno + ')');
-    }
-  }
-
-  // Format webmake error
-  if (err.code) {
-    switch(err.code) {
-    case 'AST_ERROR':
-      var filename = err.message;
-      var lineNumber = 0;
-
-      var lineIndex = filename.indexOf(':');
-      if (lineIndex !== -1) {
-        var lineNumberIndex = filename.lastIndexOf(' ', lineIndex);
-        if (lineNumberIndex !== -1) {
-          lineNumber = filename.substring(lineNumberIndex + 1, lineIndex);
-        }
-        filename = filename.substr(lineIndex + 1).trim();
-      }
-      if (err.origin.description) {
-        var errorIndex = filename.indexOf(err.origin.description);
-        if (errorIndex !== -1) {
-          filename = filename.substr(errorIndex + err.origin.description.length).trim();
-        }
-      }
-      var inIndex = filename.indexOf('in');
-      if (inIndex !== -1) {
-        filename = filename.substr(inIndex + 2).trim();
-      }
-      return new Error([
-        filename + ':' + lineNumber,
-        '',
-        'WebmakeError: ' + err.origin.description || err.message,
-      ].join('\n'));
-
-    default:    // 'DYNAMIC_REQUIRE', 'INVALID_TRANSFORM', 'EXTENSION_NOT_INSTALLED'
-      return err;
-    }
-  }
-
-  return err;
-};
 Builder.prototype._formatSyntaxError = function(err, filename, code) {
   // Get line of code
   var lineStartIndex = code.lastIndexOf('\n', err.index) + 1;
@@ -191,40 +141,38 @@ Builder.prototype.build = function(callback) {
   var self = this;
 
   var currentBuild = self._prebuild();
+  var basedir = path.dirname(self.entryPoint);
+  var entryPoint = './' + path.relative(basedir, self.entryPoint);
 
   // TODO: Add bootstrap code to check if entry point exported a Gesso object
   //       and if so, run .start() on it with the page's only canvas (or matching ID)
-  webmake(self.entryPoint, {
-    sourceMap: true,
-    cache: true,
-    transform: function(filename, code) {
+  b = browserify(entryPoint, {
+    basedir: basedir,
+    debug: true
+  });
+  b.transform(function (filename) {
+    var code = '';
+    return through(function write(buf) {
+      code += buf
+    }, function end() {
       // TODO: Use Gesso plugins to provide custom transforms
       //       e.g. CoffeeScript, PureScript, etc
       // Validate JavaScript file
-      var err = null;
       try {
         var syntax = esprima.parse(code, {tolerant: true});
         if (syntax.errors.length !== 0) {
-          err = new Error(syntax.errors.map(function(err) {
+          self._postbuild(new Error(syntax.errors.map(function(err) {
             return self._formatSyntaxError(err, filename, code).message;
-          }).join('\n\n'));
+          }).join('\n\n')));
         }
       } catch (e) {
-        err = self._formatSyntaxError(e, filename, code);
+        self._postbuild(self._formatSyntaxError(e, filename, code));
       }
-      if (err) {
-        throw err;
-      }
-
-      return code;
-    }
-  }, function(err, output) {
-    // Make build errors human-readable
-    if (err) {
-      err = self._formatBuildError(err);
-    }
-
-    // Handle post-build only if this is the latest build
+      this.queue(code);
+      this.queue(null);
+    });
+  }).bundle(function (err, output) {
+    // Run post-build if this is the latest
     if (currentBuild === self._latestBuild) {
       self._postbuild(err, output);
     }

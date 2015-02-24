@@ -140,10 +140,9 @@ Gesso projects are normal Node projects. The only additional requirements are:
 2. Your project must expose an entry point. This is implicit if you create an
     `index.js` file. Or you can be explicit by providing a [main][] field.
 
-Gesso uses [webmake][] to construct a `require()` dependency tree, including
-npm-installed packages, then combines them into a single JavaScript file.
-Note that native node.js modules will **not be available** to use on
-the front-end. If you need them, take a look at [Browserify][].
+Gesso uses [browserify][] to construct a `require()` dependency tree, including
+npm-installed packages, then combines them into a single JavaScript file. You can
+also use many Node built-in modules since they're wrapped to work in the browser.
 
 
 API
@@ -202,7 +201,6 @@ Use this software often? Please consider supporting me on
 [make good art]: http://www.youtube.com/watch?v=ikAb-NYkseI
 [hello]: examples/hello/
 [main]: http://npmjs.org/doc/files/package.json.html
-[webmake]: http://github.com/medikoo/modules-webmake
 [browserify]: http://github.com/substack/node-browserify
 [spinning/index.js]: http://github.com/gessojs/gessojs/blob/master/examples/spinning/index.js
 [authors.md]: AUTHORS.md
