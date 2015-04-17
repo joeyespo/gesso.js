@@ -31,6 +31,8 @@ inspiration shouldn't be wasted on boilerplate or build details.
 Installation
 ------------
 
+Install with [npm][].
+
 ```bash
 $ npm install -g gesso
 ```
