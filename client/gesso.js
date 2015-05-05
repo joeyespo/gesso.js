@@ -16,7 +16,7 @@ function Gesso(options) {
   this.update = new Delegate();
   this.render = new Delegate();
   this.width = options.width || 640;    // TODO: allow 'null' to use width of target canvas
-  this.height = options.height || 640;  // TODO: allow 'null' to use height of target canvas
+  this.height = options.height || 480;  // TODO: allow 'null' to use height of target canvas
   this._initialized = false;
 }
 Gesso.Controller = Controller;
