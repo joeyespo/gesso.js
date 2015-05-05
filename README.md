@@ -87,7 +87,7 @@ Usage
 
     ```bash
     $ gesso server
-    version: 0.10.0
+    version: 0.10.1
      * Running on http://localhost:63550/
      * Watching for changes
     ```
