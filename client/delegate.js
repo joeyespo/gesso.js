@@ -3,7 +3,7 @@ var util = require('./util');
 
 // Returns a callable object that, when called with a function, subscribes
 // to the delegate. Call invoke on this object to invoke each handler.
-function Delegate() {
+function Delegate(subscribed, unsubscribed) {
   var handlers = [];
 
   function callable(handler) {
@@ -12,9 +12,21 @@ function Delegate() {
     } else if (typeof handler !== 'function') {
       throw new Error('Delegate argument must be a Function object (got ' + typeof handler + ')');
     }
+    // Add the handler
     handlers.push(handler);
+    // Allow custom logic on subscribe, passing in the handler
+    if (subscribed) {
+      subscribed(handler);
+    }
+    // Return the unsubscribe function
     return function unsubscribe() {
-      return util.removeLast(handlers, handler);
+      var initialHandler = util.removeLast(handlers, handler);
+      // Allow custom logic on unsubscribe, passing in the original handler
+      if (unsubscribed) {
+        unsubscribed(initialHandler);
+      }
+      // Return the original handler
+      return initialHandler;
     };
   }
   callable.invoke = function invoke() {
