@@ -3,8 +3,8 @@ var lowLevel = require('./lowLevel');
 
 function Controller(gesso, canvas) {
   this.gesso = gesso;
-  this._canvas = canvas || lowLevel.getCanvas();
-  this._context = this._canvas.getContext('2d');
+  this.canvas = canvas || lowLevel.getCanvas();
+  this._context = this.canvas.getContext('2d');
   this._running = null;
   this._requestId = null;
 }
