@@ -2,6 +2,17 @@ Gesso Changelog
 ===============
 
 
+Version 0.11.0 (2015-05-08)
+---------------------------
+
+- API: Expose Controller.canvas.
+- Enhancement: Add ability to listen to Delegate subscribes and unsubscribes.
+- Enhancement: Add cross-platform Gesso.click() handler for mousedown and touchstart.
+- Enhancement: Add ability to use <img id="gesso-target"> as a placeholder until script loads.
+- Bugfix: Reflect default host in CLI usage help.
+- Bugfix: Fix endless wait after building from the CLI.
+
+
 Version 0.10.1 (2015-05-04)
 ---------------------------
 
