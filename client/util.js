@@ -42,11 +42,42 @@ function removeLast(array, item) {
 }
 
 
+function changeTagName(element, tagName) {
+  if (element.tagName === tagName.toUpperCase()) {
+    return element;
+  }
+
+  // Try changing the type first (modern browsers, except IE)
+  element.tagName = tagName;
+  if (element.tagName === tagName.toUpperCase()) {
+    return element;
+  }
+
+  // Create new element
+  var newElement = document.createElement(tagName);
+  console.log(tagName);
+  console.log(newElement);
+  // Copy attributes
+  for (var i = 0; i < element.attributes.length; i++) {
+    newElement.setAttribute(element.attributes[i].name, element.attributes[i].value);
+  }
+  // Copy child nodes
+  while (element.firstChild) {
+    newElement.appendChild(element.firstChild);
+  }
+  // Replace element
+  element.parentNode.replaceChild(newElement, element);
+
+  return newElement;
+}
+
+
 module.exports = {
   forEach: forEach,
   pop: pop,
   indexOf: indexOf,
   lastIndexOf: lastIndexOf,
   remove: remove,
-  removeLast: removeLast
+  removeLast: removeLast,
+  changeTagName: changeTagName
 };

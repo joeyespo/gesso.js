@@ -1,3 +1,6 @@
+var util = require('./util');
+
+
 var raf = (function () {
   // Raf polyfill by Erik Möller. fixes from Paul Irish and Tino Zijdel
   // Adapted by Joe Esposito
@@ -45,6 +48,12 @@ function getCanvas() {
   // TODO: Read the project settings use the right ID
   var canvas = window.document.getElementById('gesso-target');
 
+  // Replace image placeholder with canvas
+  if (canvas && canvas.tagName === 'IMG') {
+    canvas = util.changeTagName(canvas, 'canvas');
+  }
+
+  // Default to using the only canvas on the page, if available
   if (!canvas) {
     var canvases = window.document.getElementsByTagName('canvas');
     if (canvases.length === 1) {
@@ -52,6 +61,7 @@ function getCanvas() {
     }
   }
 
+  // Raise error if no usable canvases were found
   if (!canvas) {
     throw new Error('Canvas not found.');
   }
