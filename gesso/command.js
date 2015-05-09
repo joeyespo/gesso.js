@@ -76,6 +76,8 @@ function main(argv, modulePackage) {
     bundler.bundle({
       outputFile: options['--out'],
       noIndex: options['--no-index']
+    }, function (err) {
+      process.exit(err ? 1 : 0);
     });
     break;
 
