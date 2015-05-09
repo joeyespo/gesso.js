@@ -146,14 +146,14 @@ Builder.prototype.build = function(callback) {
 
   // TODO: Add bootstrap code to check if entry point exported a Gesso object
   //       and if so, run .start() on it with the page's only canvas (or matching ID)
-  b = browserify(entryPoint, {
+  var b = browserify(entryPoint, {
     basedir: basedir,
     debug: true
   });
   b.transform(function (filename) {
     var code = '';
     return through(function write(buf) {
-      code += buf
+      code += buf;
     }, function end() {
       // TODO: Use Gesso plugins to provide custom transforms
       //       e.g. CoffeeScript, PureScript, etc
