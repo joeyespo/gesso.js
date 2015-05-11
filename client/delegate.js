@@ -15,15 +15,16 @@ function Delegate(subscribed, unsubscribed) {
     // Add the handler
     handlers.push(handler);
     // Allow custom logic on subscribe, passing in the handler
+    var subscribedResult;
     if (subscribed) {
-      subscribed(handler);
+      subscribedResult = subscribed(handler);
     }
     // Return the unsubscribe function
     return function unsubscribe() {
       var initialHandler = util.removeLast(handlers, handler);
       // Allow custom logic on unsubscribe, passing in the original handler
       if (unsubscribed) {
-        unsubscribed(initialHandler);
+        unsubscribed(initialHandler, subscribedResult);
       }
       // Return the original handler
       return initialHandler;

@@ -17,13 +17,18 @@ function Gesso(options) {
   this.render = new Delegate();
   this.click = new Delegate(function (handler) {
     // TODO: Use the canvas passed into run()
-    Gesso.getCanvas().addEventListener('touchstart', handler, false);
-    Gesso.getCanvas().addEventListener('mousedown', handler, false);
-  }, function (handler) {
-    Gesso.getCanvas().removeEventListener('touchstart', handler);
-    Gesso.getCanvas().removeEventListener('mousedown', handler);
+    var handlerWrapper = function (e) {
+      e.preventDefault();
+      handler(e);
+      return false;
+    };
+    Gesso.getCanvas().addEventListener('touchstart', handlerWrapper, false);
+    Gesso.getCanvas().addEventListener('mousedown', handlerWrapper, false);
+    return handlerWrapper;
+  }, function (handler, handlerWrapper) {
+    Gesso.getCanvas().removeEventListener('touchstart', handlerWrapper || handler);
+    Gesso.getCanvas().removeEventListener('mousedown', handlerWrapper || handler);
   });
-
   this.width = options.width || 640;    // TODO: allow 'null' to use width of target canvas
   this.height = options.height || 480;  // TODO: allow 'null' to use height of target canvas
   this._initialized = false;
