@@ -13,17 +13,47 @@
   <script src="/vendor/source-map-support/browser-source-map-support.js"></script>
   <script>sourceMapSupport.install();</script>
   <script>
+    var gessoContainer = document.getElementById('gesso-container');
+    var canvasId = gessoContainer.getAttribute('data-canvas-id');
+    var canvas = document.getElementById(canvasId);
+    var errorInfo = document.getElementById('errorInfo');
+
+    // http://stackoverflow.com/questions/8567114/how-to-make-an-ajax-call-without-jquery
+    // Compatible with IE7+, Firefox, Chrome, Opera, Safari
+    function get(url, success, error) {
+      var httpRequest = new XMLHttpRequest();
+      httpRequest.onreadystatechange = function () {
+        // Check for ready state
+        if (httpRequest.readyState !== 4) {
+          return;
+        }
+        // Call back with success or error
+        if (httpRequest.status === 200) {
+          success(httpRequest.responseText, httpRequest);
+        } else if (error) {
+          error(httpRequest);
+        }
+      };
+      httpRequest.open('GET', url, true);
+      httpRequest.send();
+    }
+
     function showError(message) {
-      var value = $('.error-info').val();
+      var value = errorInfo.value;
       if (message) {
         if (value) {
           value += '\n';
         }
         value += message + '\n';
       }
-      $('.error-info').val('').removeClass('hidden').val(value);
-      $('.error-info').scrollTop($('.error-info').get(0).scrollHeight).focus();
-      $('.generated-canvas').hide();
+      errorInfo.value = '';
+      errorInfo.classList.remove('hidden');
+      errorInfo.value = value;
+      // TODO: errorInfo.scrollTop(errorInfo.get(0).scrollHeight);
+      errorInfo.focus();
+      if (canvas) {
+        canvas.style.display = 'none';
+      }
     }
 
     // TODO: Remove once Browserify provides more granular column number mappings
@@ -46,7 +76,7 @@
 
       // Get source code and extract the original line
       // Note: This will only work as long as there's a 1-to-1 mapping between the original lines and the build's lines (e.g. not minified)
-      $.get(err.originalFileName, function (code) {
+      get(err.originalFileName, function (code) {
         var frames = stack.split('\n');
         var fileName = frames ? frames[0].replace(/^(.+)\((.+)\)$/gm, '$2') : err.originalFileName;
         var start = code.lastIndexOf('\n', err.originalPosition) + 1;
@@ -54,8 +84,8 @@
         source = (fileName + '\n' + code.substring(start, end) + '\n' +
           new Array(err.originalPosition - start + 1).join(' ') + '^');
         cb(source);
-      }, 'html').fail(function(xhr, textStatus, errorThrown) {
-        showError('Could not get source (' + textStatus + '): ' + xhr.responseText);
+      }, function () {
+        showError('[Could not GET ' + err.originalFileName + ': ' + httpRequest.status + ' ' + httpRequest.statusText + ']');
         cb(null);
       });
     }
@@ -98,7 +128,7 @@
       });
     };
 
-    if ($('.error-info').hasClass('build-error')) {
+    if (errorInfo.classList.contains('build-error')) {
       showError('');
     }
   </script>
@@ -109,9 +139,9 @@
 
 
 {% block page %}
-  <div class="container">
+  <div id="gesso-container" class="container" data-canvas-id="{{ canvasId }}">
     <h1>{{ gessoProjectName }}</h1>
-    <textarea class="error-info {{ 'build-error' if gessoBuildError else 'hidden' }}" wrap="off">{{ gessoBuildError }}</textarea>
+    <textarea id="errorInfo" class="error-info {{ 'build-error' if gessoBuildError else 'hidden' }}" wrap="off">{{ gessoBuildError }}</textarea>
     {% if not gessoBuildError %}
       <canvas id="{{ canvasId }}" class="generated-canvas" width="{{ canvasWidth }}" height="{{ canvasHeight }}"></canvas>
     {% endif %}
