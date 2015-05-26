@@ -18,4 +18,7 @@ game.render(function (ctx) {
   ctx.fillText('Browser Games!', x, 252);
 });
 
-game.run();
+// Export the game object
+module.exports = game;
+
+game.run();  // TODO: Delete this

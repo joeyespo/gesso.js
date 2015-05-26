@@ -33,5 +33,7 @@ game.render(function (ctx) {
   fillRotatedRect(ctx, 200, 250, 200, 200, angle * 0.5);
 });
 
-// Run the game
-game.run();
+// Export the game object
+module.exports = game;
+
+game.run();  // TODO: Delete this
