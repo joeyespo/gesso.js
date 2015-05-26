@@ -1,11 +1,9 @@
 var Gesso = require('gesso');
 
 var game = new Gesso();
-var t = 0;
 var x;
 
-game.update(function () {
-  t += 1;
+game.update(function (t) {
   var center = (game.width - 300) / 2;
   x = center + Math.sin(t / 15) * 20;
 });
