@@ -3,6 +3,7 @@ var path = require('path');
 var esprima = require('esprima');
 var through = require('through');
 var browserify = require('browserify');
+var utils = require('./utils');
 
 
 var PACKAGE_FILE = 'package.json';
@@ -146,11 +147,17 @@ Builder.prototype.build = function(callback) {
 
   // TODO: Add bootstrap code to check if entry point exported a Gesso object
   //       and if so, run .start() on it with the page's only canvas (or matching ID)
-  var b = browserify(entryPoint, {
+  browserify(entryPoint, {
     basedir: basedir,
     debug: true
-  });
-  b.transform(function (filename) {
+  }).transform(function (filename) {
+    // Skip translating .json files
+    // TODO: Use JSON syntax checker
+    // TODO: Syntax check .js file instead of skipping .json files? -> What about 3rd-party syntaxes?
+    if (utils.endsWith(filename, '.json')) {
+      return through();
+    }
+    // Check syntax errors
     var code = '';
     return through(function write(buf) {
       code += buf;
@@ -176,7 +183,6 @@ Builder.prototype.build = function(callback) {
     if (currentBuild === self._latestBuild) {
       self._postbuild(err, output);
     }
-
     // Always call callback of current build
     if (typeof callback === 'function') {
       callback(err, output);
