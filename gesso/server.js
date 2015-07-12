@@ -76,7 +76,13 @@ function createApp(builder, logAll) {
   });
 
   app.post('/log', function(req, res) {
-    var level = req.body.level;
+    if (!req.body || typeof req.body.message === 'undefined') {
+      res.status(400);
+      res.end('No "message" form field specified.');
+      return;
+    }
+
+    var level = req.body.level || 'log';
     var messages = req.body.message.split('\n');
     for (var index = 0; index < messages.length; index++) {
       var message = '[' + moment().format('DD/MMM/YYYY HH:mm:ss') + '] Client: ' + messages[index];
