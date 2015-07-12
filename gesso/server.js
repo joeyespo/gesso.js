@@ -9,6 +9,7 @@ var morgan = require('morgan');
 var builder = require('./builder');
 var watcher = require('./watcher');
 var settings = require('./settings');
+var utils = require('./utils');
 var Builder = builder.Builder;
 var Watcher = watcher.Watcher;
 
@@ -39,12 +40,12 @@ function createApp(builder, logAll) {
       (tokens.res(req, res, 'content-length') || '-') + '\u001b[0m');
   }, {
     skip: function (req, res) {
-      if (req.url.lastIndexOf('/log', 0) === 0) {
+      if (utils.startsWith(req.url, '/log')) {
         return true;
       }
       return !logAll && (
-        req.url.lastIndexOf('/images', 0) === 0 || req.url.lastIndexOf('/scripts', 0) === 0 ||
-        req.url.lastIndexOf('/styles', 0) === 0 || req.url.lastIndexOf('/vendor', 0) === 0);
+        utils.startsWith(req.url, '/images') || utils.startsWith(req.url, '/scripts') ||
+        utils.startsWith(req.url, '/styles') || utils.startsWith(req.url, '/vendor'));
     }
   }));
   app.use(express.static(path.join(__dirname, 'public')));
