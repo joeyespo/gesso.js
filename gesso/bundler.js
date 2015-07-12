@@ -7,7 +7,8 @@ var settings = require('./settings');
 var Builder = builder.Builder;
 
 
-var DEFAULT_BUNDLE_FILE = path.join('dist', 'gesso-bundle.js');
+var DEFAULT_BUNDLE_DIRECTORY = 'dist';
+var DEFAULT_BUNDLE_NAME = 'gesso-bundle';
 
 
 function _callback(callback, err) {
@@ -62,7 +63,9 @@ function bundle(options, callback) {
 
   // Create builder and run build
   var builder = new Builder(options.packagePath);
-  var outputFile = options.outputFile || path.join(builder.path, DEFAULT_BUNDLE_FILE);
+  var defaultOutputFilename = builder.projectName || DEFAULT_BUNDLE_NAME;
+  var outputFile = (options.outputFile ||
+    path.join(builder.path, DEFAULT_BUNDLE_DIRECTORY, defaultOutputFilename) + '.js');
 
   // Configure extensions
   nunjucks.configure(path.join(__dirname, 'views'));
