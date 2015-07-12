@@ -1,22 +1,28 @@
-/* globals $ */
-
-
 // TODO: Logger class
 // TODO: Pluggable log backend, e.g. console.log
 
 
+// http://stackoverflow.com/questions/6418220/javascript-send-json-object-with-ajax
+// http://stackoverflow.com/questions/9713058/sending-post-data-with-a-xmlhttprequest
+// http://stackoverflow.com/questions/332872/encode-url-in-javascript
 function _send(level, args) {
-  // TODO: Inspect object instead of sending [object Object]
-  // TODO: Remove the implied jQuery dependency
-  $.post('/log', {
-    level: level,
-    message: args.join(' ')
-  }).fail(function(xhr, textStatus, errorThrown) {
-    // TODO: Notify user on the page and show message if console.log doesn't exist
-    if (console && console.log) {
-      console.log(xhr.responseText);
+  var payload = (
+    'level=' + encodeURIComponent(level) +
+    '&message=' + encodeURIComponent(args.join(' ')));
+
+  var xhr = new XMLHttpRequest();
+  xhr.open('POST', '/log');
+  xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+  xhr.onreadystatechange = function () {
+    // Check for error state
+    if (xhr.readyState === 4 && xhr.status !== 200) {
+      // TODO: Notify user on the page and show message if console.log doesn't exist
+      if (console && console.log) {
+        console.log(xhr.responseText);
+      }
     }
-  });
+  };
+  xhr.send(payload);
 }
 
 
