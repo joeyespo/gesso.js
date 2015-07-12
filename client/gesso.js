@@ -32,6 +32,7 @@ function Gesso(options) {
   this.width = options.width || 640;    // TODO: allow 'null' to use width of target canvas
   this.height = options.height || 480;  // TODO: allow 'null' to use height of target canvas
   this._initialized = false;
+  this._frameCount = 0;
 }
 Gesso.Controller = Controller;
 Gesso.Delegate = Delegate;
@@ -56,7 +57,7 @@ Gesso.prototype.step = function step(context) {
   this.renderTo(context);
 };
 Gesso.prototype.nextFrame = function nextFrame() {
-  return this.update.invoke();
+  return this.update.invoke(++this._frameCount);
 };
 Gesso.prototype.renderTo = function renderTo(context) {
   return this.render.invoke(context);
