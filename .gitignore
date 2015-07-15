@@ -1,6 +1,5 @@
 # Environment files
 node_modules/
-gesso/public/vendor
 gesso/settings-local.js
 
 # OS-specific files
