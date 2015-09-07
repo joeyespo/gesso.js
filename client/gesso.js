@@ -6,17 +6,12 @@ var lowLevel = require('./lowLevel');
 var logging = require('./logging');
 
 
-function getBaseUrl(fullUrl) {
-  var urlObj = url.parse(fullUrl);
-  urlObj.pathname = path.dirname(urlObj.pathname);
-  return url.format(urlObj);
-}
-
-
 function Gesso(options) {
   options = options || {};
   this.scriptUrl = Gesso.getScriptUrl();
-  this.baseUrl = getBaseUrl(this.scriptUrl);
+  this.asset = function (assetPath) {
+    return url.resolve(this.scriptUrl, path.join('assets', assetPath));
+  };
   this.contextType = options.contextType || '2d';
   this.contextAttributes = options.contextAttributes;
   this.fps = options.fps || 60;
