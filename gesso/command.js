@@ -127,14 +127,14 @@ function packagelessMain(argv) {
 }
 
 
-function globalMain() {
+function globalMain(argv) {
   new Liftoff({
     name: 'gesso'
   }).launch({}, function(env) {
     // Check for local installation and run it's main function,
     // or run packageless main if outside of a package
     if (env.modulePath) {
-      require(env.modulePath).main(undefined, env.modulePackage);
+      require(env.modulePath).main(argv, env.modulePackage);
     } else {
       packagelessMain();
     }
