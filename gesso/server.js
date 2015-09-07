@@ -17,6 +17,7 @@ var Watcher = watcher.Watcher;
 function createApp(builder, logAll) {
   // Express application
   var app = express();
+  app.use('/assets', express.static(path.join(builder.path, 'assets')));
 
   // Attach watcher
   app.watcher = watcher || null;
