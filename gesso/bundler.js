@@ -48,10 +48,8 @@ function mkdirs(dir, callback) {
     // Make next directory
     var dirname = dirnames.shift();
     currentPath = path.join(currentPath, dirname);
-    fs.exists(currentPath, function(err, exists) {
-      fs.mkdir(currentPath, function(err) {
-        return mkdirsInner(dirnames, currentPath, callback);
-      });
+    fs.mkdir(currentPath, function(err) {
+      return mkdirsInner(dirnames, currentPath, callback);
     });
   }
   return mkdirsInner(dirnames, currentPath, callback);
