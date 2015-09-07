@@ -1,11 +1,22 @@
+var url = require('url');
+var path = require('path');
 var Controller = require('./controller');
 var Delegate = require('./delegate');
 var lowLevel = require('./lowLevel');
 var logging = require('./logging');
 
 
+function getBaseUrl(fullUrl) {
+  var urlObj = url.parse(fullUrl);
+  urlObj.pathname = path.dirname(urlObj.pathname);
+  return url.format(urlObj);
+}
+
+
 function Gesso(options) {
   options = options || {};
+  this.scriptUrl = Gesso.getScriptUrl();
+  this.baseUrl = getBaseUrl(this.scriptUrl);
   this.contextType = options.contextType || '2d';
   this.contextAttributes = options.contextAttributes;
   this.fps = options.fps || 60;
@@ -36,6 +47,7 @@ function Gesso(options) {
 }
 Gesso.Controller = Controller;
 Gesso.Delegate = Delegate;
+Gesso.getScriptUrl = lowLevel.getScriptUrl;
 Gesso.requestAnimationFrame = lowLevel.requestAnimationFrame;
 Gesso.cancelAnimationFrame = lowLevel.cancelAnimationFrame;
 Gesso.getCanvas = lowLevel.getCanvas;

@@ -1,6 +1,15 @@
 var util = require('./util');
 
 
+// TODO: Find a better way to do this
+var getScriptUrl = (function() {
+  var scripts = document.getElementsByTagName('script');
+  var index = scripts.length - 1;
+  var thisScript = scripts[index];
+  return function() { return thisScript.src; };
+})();
+
+
 var raf = (function () {
   // Raf polyfill by Erik Möller. fixes from Paul Irish and Tino Zijdel
   // Adapted by Joe Esposito
@@ -81,6 +90,7 @@ function getWebGLContext() {
 
 
 module.exports = {
+  getScriptUrl: getScriptUrl,
   requestAnimationFrame: raf.requestAnimationFrame,
   cancelAnimationFrame: raf.cancelAnimationFrame,
   getCanvas: getCanvas,
