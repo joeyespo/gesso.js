@@ -1,4 +1,4 @@
-var fs = require('fs');
+var fs = require('fs-extra');
 var path = require('path');
 var chalk = require('chalk');
 var nunjucks = require('nunjucks');
@@ -66,6 +66,8 @@ function bundle(options, callback) {
   var defaultOutputFilename = builder.projectName || DEFAULT_BUNDLE_NAME;
   var outputFile = (options.outputFile ||
     path.join(builder.path, DEFAULT_BUNDLE_DIRECTORY, defaultOutputFilename) + '.js');
+  var outputDir = path.dirname(outputFile);
+  var assetsDir = path.join(builder.path, 'assets');
 
   // Configure extensions
   nunjucks.configure(path.join(__dirname, 'views'));
@@ -77,7 +79,6 @@ function bundle(options, callback) {
       return _error(callback, err);
     }
 
-    var outputDir = path.dirname(outputFile);
     mkdirs(outputDir, function(err) {
       if (err) {
         return _error(callback, err, 'Could not create output directory');
@@ -88,23 +89,38 @@ function bundle(options, callback) {
           return _error(callback, err, 'Could not write output file');
         }
 
-        if (options.noIndex) {
-          return _callback(callback);
-        }
+        // Add asset directory
+        fs.exists(assetsDir, function(exists) {
+          function addIndex() {
+            // Check for --no-index
+            if (options.noIndex) {
+              return _callback(callback);
+            }
 
-        var index = nunjucks.render('dist/index.html', {
-          gessoScript: path.basename(outputFile),
-          gessoProjectName: builder.projectName,
-          canvasId: settings.CANVAS_ID,
-          canvasWidth: settings.CANVAS_WIDTH,
-          canvasHeight: settings.CANVAS_HEIGHT
-        });
-        fs.writeFile(path.join(outputDir, 'index.html'), index, function(err) {
-          if (err) {
-            return _error(callback, err, 'Could not write index file');
+            // Add index.html
+            var index = nunjucks.render('dist/index.html', {
+              gessoScript: path.basename(outputFile),
+              gessoProjectName: builder.projectName,
+              canvasId: settings.CANVAS_ID,
+              canvasWidth: settings.CANVAS_WIDTH,
+              canvasHeight: settings.CANVAS_HEIGHT
+            });
+            fs.writeFile(path.join(outputDir, 'index.html'), index, function(err) {
+              if (err) {
+                return _error(callback, err, 'Could not write index file');
+              }
+
+              return _callback(callback);
+            });
           }
 
-          return _callback(callback);
+          if (exists) {
+            var outputAssetsDir = path.join(outputDir, 'assets');
+            console.log('Copying assets to', path.relative('.', outputAssetsDir) + '...');
+            fs.copy(assetsDir, outputAssetsDir, addIndex);
+          } else {
+            addIndex();
+          }
         });
       });
     });
