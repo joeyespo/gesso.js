@@ -7,8 +7,8 @@ var settings = require('./settings');
 var Builder = builder.Builder;
 
 
-var DEFAULT_BUNDLE_DIRECTORY = 'dist';
-var DEFAULT_BUNDLE_NAME = 'gesso-bundle';
+var DEFAULT_OUTPUT_DIRECTORY = 'dist';
+var DEFAULT_PROJECT_NAME = builder.DEFAULT_PROJECT_NAME;
 
 
 function _callback(callback, err) {
@@ -61,9 +61,9 @@ function bundle(options, callback) {
 
   // Create builder and run build
   var builder = new Builder(options.packagePath);
-  var defaultOutputFilename = builder.projectName || DEFAULT_BUNDLE_NAME;
+  var defaultOutputFilename = builder.projectName || DEFAULT_PROJECT_NAME;
   var outputFile = (options.outputFile ||
-    path.join(builder.path, DEFAULT_BUNDLE_DIRECTORY, defaultOutputFilename) + '.js');
+    path.join(builder.path, DEFAULT_OUTPUT_DIRECTORY, defaultOutputFilename) + '.js');
   var outputDir = path.dirname(outputFile);
   var assetsDir = path.join(builder.path, 'assets');
 

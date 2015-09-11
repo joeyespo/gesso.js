@@ -8,6 +8,7 @@ var utils = require('./utils');
 
 var PACKAGE_FILE = 'package.json';
 var DEFAULT_ENTRY_POINT = 'index.js';
+var DEFAULT_PROJECT_NAME = 'gesso-bundle';
 
 
 function _BuildRef() {
@@ -36,7 +37,7 @@ Builder.prototype._resolvePaths = function(fileOrPath) {
   if (fileOrPath === '.' || fs.lstatSync(fileOrPath).isDirectory()) {
     var packagePath = path.resolve(path.join(fileOrPath, PACKAGE_FILE));
     try {
-      var pkg = require(packagePath);
+      var pkg = JSON.parse(fs.readFileSync(packagePath, 'utf8'));
       projectName = pkg.name;
       entryPoint = pkg.main;
     } catch(ex) {
@@ -50,15 +51,23 @@ Builder.prototype._resolvePaths = function(fileOrPath) {
     entryPoint = fileOrPath;
   }
 
-  entryPoint = path.resolve(entryPoint);
-  if (projectName === null) {
-    projectName = path.basename(entryPoint);
-    var extname = path.extname(projectName);
-    projectName = projectName.slice(0, projectName.length - extname.length);
+  this.entryPoint = path.resolve(entryPoint);
+  this.path = path.dirname(this.entryPoint);
+  this._resolveProjectName();
+};
+Builder.prototype._resolveProjectName = function() {
+  // Try reading entry point from package
+  var projectName = null;
+  try {
+    projectName = JSON.parse(fs.readFileSync(path.join(this.path, PACKAGE_FILE), 'utf8')).name;
+  } catch(ex) {
   }
+  if (!projectName) {
+    var dirName = path.basename(path.dirname(this.entryPoint));
+    projectName = dirName.slice(0, dirName.length - path.extname(dirName).length);
+  }
+  // TODO: Slugify the name? -> Remove dangerous characters like '/'
   this.projectName = projectName;
-  this.entryPoint = entryPoint;
-  this.path = path.dirname(entryPoint);
 };
 Builder.prototype._prebuild = function() {
   var latestBuild = new _BuildRef();
@@ -141,6 +150,9 @@ Builder.prototype.ready = function(callback) {
 Builder.prototype.build = function(callback) {
   var self = this;
 
+  // Resolve paths again in case the project name changed
+  self._resolveProjectName();
+
   var currentBuild = self._prebuild();
   var basedir = path.dirname(self.entryPoint);
   var entryPoint = './' + path.relative(basedir, self.entryPoint);
@@ -193,5 +205,6 @@ Builder.prototype.build = function(callback) {
 
 module.exports = {
   DEFAULT_ENTRY_POINT: DEFAULT_ENTRY_POINT,
+  DEFAULT_PROJECT_NAME: DEFAULT_PROJECT_NAME,
   Builder: Builder
 };

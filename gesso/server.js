@@ -14,6 +14,11 @@ var Builder = builder.Builder;
 var Watcher = watcher.Watcher;
 
 
+function scriptFile(builder) {
+  return (builder.projectName || builder.DEFAULT_PROJECT_NAME) + '.js';
+}
+
+
 function createApp(builder, logAll) {
   // Express application
   var app = express();
@@ -60,20 +65,13 @@ function createApp(builder, logAll) {
       // TODO: Get values from project settings
       res.type('html');
       res.end(nunjucks.render('index.html', {
-        gessoScript: '/gesso-bundle.js',
+        gessoScript: '/' + scriptFile(builder),
         gessoProjectName: builder.projectName,
         gessoBuildError: err ? (err.message || String(err)) + os.EOL : null,
         canvasId: settings.CANVAS_ID,
         canvasWidth: settings.CANVAS_WIDTH,
         canvasHeight: settings.CANVAS_HEIGHT
       }));
-    });
-  });
-
-  app.get('/gesso-bundle.js', function(req, res) {
-    res.type('js');
-    builder.ready(function(err, output) {
-      res.end(output || '');
     });
   });
 
@@ -100,6 +98,16 @@ function createApp(builder, logAll) {
       console.log(message);
     }
     res.end('');
+  });
+
+  app.use('/:script', function (req, res, next) {
+    if (req.params.script !== scriptFile(builder)) {
+      return next();
+    }
+    res.type('js');
+    builder.ready(function(err, output) {
+      res.end(output || '');
+    });
   });
 
   return app;
