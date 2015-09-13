@@ -23,7 +23,8 @@ var doc = [
   '    --log-all           Logs all HTTP requests',
   '',
   '  gesso build [options]',
-  '    Builds your app and bundles it to the output file (dist/gesso-bundle.js by default).',
+  '    Builds your app, copies the files in assets/, and bundles them  a default index.html',
+  '    to output directory (dist/ by default).',
   '    Aliases: b',
   '    --out=<path>, -o    (Default: dist/gesso-bundle.js)',
   '    --no-index          Does not create dist/index.html'
