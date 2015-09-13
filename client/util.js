@@ -55,8 +55,6 @@ function changeTagName(element, tagName) {
 
   // Create new element
   var newElement = document.createElement(tagName);
-  console.log(tagName);
-  console.log(newElement);
   // Copy attributes
   for (var i = 0; i < element.attributes.length; i++) {
     newElement.setAttribute(element.attributes[i].name, element.attributes[i].value);
