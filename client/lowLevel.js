@@ -2,12 +2,31 @@ var util = require('./util');
 
 
 // TODO: Find a better way to do this
-var getScriptUrl = (function() {
+var getScriptUrl = (function () {
   var scripts = document.getElementsByTagName('script');
   var index = scripts.length - 1;
   var thisScript = scripts[index];
-  return function() { return thisScript.src; };
+  return function () { return thisScript.src; };
 })();
+
+
+function getQueryVariables() {
+  var pl = /\+/g;  // Regex for replacing addition symbol with a space
+  var search = /([^&=]+)=?([^&]*)/g;
+  var decode = function (s) {
+    return decodeURIComponent(s.replace(pl, ' '));
+  };
+  var query = window.location.search.substring(1);
+
+  var urlParams = {};
+  while (true) {
+    var match = search.exec(query);
+    if (!match) {
+      return urlParams;
+    }
+    urlParams[decode(match[1])] = decode(match[2]);
+  }
+}
 
 
 var raf = (function () {
@@ -31,7 +50,7 @@ var raf = (function () {
     requestAnimationFrame = function(callback) {
       var currTime = new Date().getTime();
       var timeToCall = Math.max(0, 16 - (currTime - lastTime));
-      var id = setTimeout(function() { callback(currTime + timeToCall); }, timeToCall);
+      var id = setTimeout(function () { callback(currTime + timeToCall); }, timeToCall);
       lastTime = currTime + timeToCall;
       return id;
     };
@@ -91,6 +110,7 @@ function getWebGLContext() {
 
 module.exports = {
   getScriptUrl: getScriptUrl,
+  getQueryVariables: getQueryVariables,
   requestAnimationFrame: raf.requestAnimationFrame,
   cancelAnimationFrame: raf.cancelAnimationFrame,
   getCanvas: getCanvas,

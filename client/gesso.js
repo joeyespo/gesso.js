@@ -8,6 +8,7 @@ var logging = require('./logging');
 
 function Gesso(options) {
   options = options || {};
+  this.queryVariables = null;
   this.scriptUrl = Gesso.getScriptUrl();
   this.contextType = options.contextType || '2d';
   this.contextAttributes = options.contextAttributes;
@@ -39,6 +40,7 @@ function Gesso(options) {
 }
 Gesso.Controller = Controller;
 Gesso.Delegate = Delegate;
+Gesso.getQueryVariables = lowLevel.getQueryVariables;
 Gesso.getScriptUrl = lowLevel.getScriptUrl;
 Gesso.requestAnimationFrame = lowLevel.requestAnimationFrame;
 Gesso.cancelAnimationFrame = lowLevel.cancelAnimationFrame;
@@ -73,6 +75,12 @@ Gesso.prototype.run = function run(canvas) {
 };
 Gesso.prototype.asset = function asset(assetPath) {
   return url.resolve(this.scriptUrl, path.join('assets', assetPath));
+};
+Gesso.prototype.param = function param(name) {
+  if (this.queryVariables === null) {
+    this.queryVariables = Gesso.getQueryVariables();
+  }
+  return this.queryVariables[name];
 };
 
 
