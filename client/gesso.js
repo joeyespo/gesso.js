@@ -9,9 +9,6 @@ var logging = require('./logging');
 function Gesso(options) {
   options = options || {};
   this.scriptUrl = Gesso.getScriptUrl();
-  this.asset = function (assetPath) {
-    return url.resolve(this.scriptUrl, path.join('assets', assetPath));
-  };
   this.contextType = options.contextType || '2d';
   this.contextAttributes = options.contextAttributes;
   this.fps = options.fps || 60;
@@ -73,6 +70,9 @@ Gesso.prototype.run = function run(canvas) {
   var controller = new Controller(this, canvas);
   controller.start();
   return controller;
+};
+Gesso.prototype.asset = function asset(assetPath) {
+  return url.resolve(this.scriptUrl, path.join('assets', assetPath));
 };
 
 
