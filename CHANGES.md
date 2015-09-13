@@ -2,6 +2,24 @@ Gesso Changelog
 ===============
 
 
+Version 0.12.0 (2015-09-12)
+---------------------------
+
+- Enhancement: Have `Gesso` handle `preventDefault` for the click event
+- Enhancement: Remove Bootstrap, FontAwesome, and jQuery dependencies
+- Enhancement: Remove Bower dependency from the built-in server's frontend
+  (removed Bootstrap, FontAwesome, and jQuery; added custom Bootstrap-based CSS reset;
+  inlined source-map-support, and stacktrace.js)
+- Enhancement: Build and serve `<project-name>.js` instead of `gesso-bundle.js`
+- Enhancement: Allow passing in custom `argv` to `globalMain` for running the CLI from a script
+- Enhancement: Build and serve client assets from `/assets` and add `Gesso.asset('<filename>')`
+  helper for constructing proper asset URLs (e.g. serving from a CDN)
+- Bugfix: Handle malformed logging message errors on the server
+- Bugfix: Don't syntax-check .json files that are loaded with `require` in client code
+- Bugfix: Serve title and script name dynamically so you don't need to re-run the server manually
+- Docs: Update and clean up the examples
+
+
 Version 0.11.0 (2015-05-08)
 ---------------------------
 
