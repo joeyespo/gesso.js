@@ -10,6 +10,7 @@ h1 {
   display: block;
   margin: 12px auto;
   border: 1px solid #ddd;
+  max-width: 100%;
 }
 
 .error-info {
