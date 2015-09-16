@@ -2,6 +2,10 @@ var raf = require('./vendor/raf');
 var util = require('./util');
 
 
+// Global polyfills
+require('./vendor/hand.min.1.3.8');
+
+
 // TODO: Find a better way to do this
 var getScriptUrl = (function () {
   var scripts = document.getElementsByTagName('script');

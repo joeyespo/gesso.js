@@ -6,6 +6,24 @@ var lowLevel = require('./lowLevel');
 var logging = require('./logging');
 
 
+function pointerHandlerWrapper(gesso, canvas, handler) {
+  return function (e) {
+    e.preventDefault();
+    var rect = canvas.getBoundingClientRect();
+    var x = e.clientX - rect.left;
+    var y = e.clientY - rect.top;
+    if (gesso.width !== rect.width) {
+      x *= gesso.width / rect.width;
+    }
+    if (gesso.height !== rect.height) {
+      y *= gesso.height / rect.height;
+    }
+    handler({x: x, y: y, e: e});
+    return false;
+  };
+}
+
+
 function Gesso(options) {
   options = options || {};
   this.queryVariables = null;
@@ -14,27 +32,49 @@ function Gesso(options) {
   this.contextAttributes = options.contextAttributes;
   this.fps = options.fps || 60;
   this.autoplay = options.autoplay || true;
+  this.width = options.width || 640;    // TODO: allow 'null' to use width of target canvas
+  this.height = options.height || 480;  // TODO: allow 'null' to use height of target canvas
   this.setup = new Delegate();
   this.start = new Delegate();
   this.stop = new Delegate();
   this.update = new Delegate();
   this.render = new Delegate();
+  // TODO: Use the canvas passed into run() instead of Gesso.getCanvas in these input handlers
+  var self = this;
   this.click = new Delegate(function (handler) {
-    // TODO: Use the canvas passed into run()
-    var handlerWrapper = function (e) {
-      e.preventDefault();
-      handler(e);
-      return false;
-    };
-    Gesso.getCanvas().addEventListener('touchstart', handlerWrapper, false);
-    Gesso.getCanvas().addEventListener('mousedown', handlerWrapper, false);
-    return handlerWrapper;
-  }, function (handler, handlerWrapper) {
-    Gesso.getCanvas().removeEventListener('touchstart', handlerWrapper || handler);
-    Gesso.getCanvas().removeEventListener('mousedown', handlerWrapper || handler);
+    var canvas = Gesso.getCanvas();
+    var r = {canvas: canvas, handlerWrapper: pointerHandlerWrapper(self, canvas, handler)};
+    r.canvas.addEventListener('touchstart', r.handlerWrapper, false);
+    r.canvas.addEventListener('mousedown', r.handlerWrapper, false);
+    return r;
+  }, function (handler, r) {
+    r.canvas.removeEventListener('touchstart', r.handlerWrapper || handler);
+    r.canvas.removeEventListener('mousedown', r.handlerWrapper || handler);
   });
-  this.width = options.width || 640;    // TODO: allow 'null' to use width of target canvas
-  this.height = options.height || 480;  // TODO: allow 'null' to use height of target canvas
+  this.pointerdown = new Delegate(function (handler) {
+    var canvas = Gesso.getCanvas();
+    var r = {canvas: canvas, handlerWrapper: pointerHandlerWrapper(self, canvas, handler)};
+    r.canvas.addEventListener('pointerdown', r.handlerWrapper, false);
+    return r;
+  }, function (handler, r) {
+    r.canvas.removeEventListener('pointerdown', r.handlerWrapper || handler);
+  });
+  this.pointermove = new Delegate(function (handler) {
+    var canvas = Gesso.getCanvas();
+    var r = {canvas: canvas, handlerWrapper: pointerHandlerWrapper(self, canvas, handler)};
+    r.canvas.addEventListener('pointermove', r.handlerWrapper, false);
+    return r;
+  }, function (handler, r) {
+    r.canvas.removeEventListener('pointermove', r.handlerWrapper || handler);
+  });
+  this.pointerup = new Delegate(function (handler) {
+    var canvas = Gesso.getCanvas();
+    var r = {canvas: canvas, handlerWrapper: pointerHandlerWrapper(self, canvas, handler)};
+    r.canvas.addEventListener('pointerup', r.handlerWrapper, false);
+    return r;
+  }, function (handler, r) {
+    r.canvas.removeEventListener('pointerup', r.handlerWrapper || handler);
+  });
   this._initialized = false;
   this._frameCount = 0;
 }
