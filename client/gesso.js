@@ -24,6 +24,18 @@ function pointerHandlerWrapper(gesso, canvas, handler) {
 }
 
 
+function keyHandlerWrapper(handler) {
+  return function (e) {
+    var allowDefault = !lowLevel.isRootContainer(e.target);
+    if (!allowDefault) {
+      e.preventDefault();
+    }
+    handler({which: e.which, e: e});
+    return allowDefault;
+  };
+}
+
+
 function Gesso(options) {
   options = options || {};
   this.queryVariables = null;
@@ -74,6 +86,20 @@ function Gesso(options) {
     return r;
   }, function (handler, r) {
     r.canvas.removeEventListener('pointerup', r.handlerWrapper || handler);
+  });
+  this.keydown = new Delegate(function (handler) {
+    var r = {root: lowLevel.getRootElement(), handlerWrapper: keyHandlerWrapper(handler)};
+    r.root.addEventListener('keydown', r.handlerWrapper, false);
+    return r;
+  }, function (handler, r) {
+    r.root.removeEventListener('keydown', r.handlerWrapper || handler);
+  });
+  this.keyup = new Delegate(function (handler) {
+    var r = {root: lowLevel.getRootElement(), handlerWrapper: keyHandlerWrapper(handler)};
+    r.root.addEventListener('keyup', r.handlerWrapper, false);
+    return r;
+  }, function (handler, r) {
+    r.root.removeEventListener('keyup', r.handlerWrapper || handler);
   });
   this._initialized = false;
   this._frameCount = 0;

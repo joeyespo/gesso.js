@@ -1,3 +1,5 @@
+/* globals document */
+
 var raf = require('./vendor/raf');
 var util = require('./util');
 
@@ -31,6 +33,16 @@ function getQueryVariables() {
     }
     urlParams[decode(match[1])] = decode(match[2]);
   }
+}
+
+
+function getRootElement() {
+  return document;
+}
+
+
+function isRootContainer(target) {
+  return target === document || target === document.body;
 }
 
 
@@ -76,10 +88,12 @@ function getWebGLContext() {
 
 
 module.exports = {
-  getScriptUrl: getScriptUrl,
-  getQueryVariables: getQueryVariables,
   requestAnimationFrame: raf.requestAnimationFrame,
   cancelAnimationFrame: raf.cancelAnimationFrame,
+  getScriptUrl: getScriptUrl,
+  getQueryVariables: getQueryVariables,
+  getRootElement: getRootElement,
+  isRootContainer: isRootContainer,
   getCanvas: getCanvas,
   getContext2D: getContext2D,
   getWebGLContext: getWebGLContext
