@@ -26,12 +26,12 @@ function pointerHandlerWrapper(gesso, canvas, handler) {
 
 function keyHandlerWrapper(handler) {
   return function (e) {
-    var allowDefault = !lowLevel.isRootContainer(e.target);
-    if (!allowDefault) {
+    var handled = handler({which: e.which, e: e});
+    // Prevent default when handled and not focused on an external UI element
+    if (handled && lowLevel.isRootContainer(e.target)) {
       e.preventDefault();
+      return false;
     }
-    handler({which: e.which, e: e});
-    return allowDefault;
   };
 }
 
