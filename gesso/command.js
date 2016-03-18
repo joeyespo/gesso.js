@@ -122,8 +122,8 @@ function packagelessMain(argv) {
   }
 
   // Show local installation message and exit
-  console.log(chalk.red('No local installation of gesso found at'), chalk.magenta(tildify(process.cwd())));
-  console.log(chalk.red('Try running: npm install gesso'));
+  console.error(chalk.red('No local installation of gesso found at'), chalk.magenta(tildify(process.cwd())));
+  console.error(chalk.red('Try running: npm install gesso'));
   process.exit(1);
 }
 
