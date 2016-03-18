@@ -5,15 +5,12 @@ var through = require('through');
 var browserify = require('browserify');
 var utils = require('./utils');
 
-
 var PACKAGE_FILE = 'package.json';
 var DEFAULT_ENTRY_POINT = 'index.js';
 var DEFAULT_PROJECT_NAME = 'gesso-bundle';
 
-
 function _BuildRef() {
 }
-
 
 function Builder(entryPoint) {
   this.packagePath = null;
@@ -201,7 +198,6 @@ Builder.prototype.build = function(callback) {
     }
   });
 };
-
 
 module.exports = {
   DEFAULT_ENTRY_POINT: DEFAULT_ENTRY_POINT,

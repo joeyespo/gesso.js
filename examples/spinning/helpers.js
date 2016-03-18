@@ -19,7 +19,6 @@ function fillRotatedRect(ctx, x, y, width, height, angle) {
   ctx.restore();
 }
 
-
 module.exports = {
   fillRotatedRect: fillRotatedRect
 };

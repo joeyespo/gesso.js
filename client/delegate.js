@@ -1,6 +1,5 @@
 var util = require('./util');
 
-
 // Returns a callable object that, when called with a function, subscribes
 // to the delegate. Call invoke on this object to invoke each handler.
 function Delegate(subscribed, unsubscribed) {
@@ -41,6 +40,5 @@ function Delegate(subscribed, unsubscribed) {
 
   return callable;
 }
-
 
 module.exports = Delegate;

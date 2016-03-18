@@ -4,11 +4,9 @@ function forEach(array, stepFunction) {
   }
 }
 
-
 function pop(array, index) {
   return typeof index === 'undefined' ? array.pop() : array.splice(index, 1)[0];
 }
-
 
 function indexOf(array, item, startIndex) {
   for (var index = startIndex || 0; index < array.length; index++) {
@@ -19,7 +17,6 @@ function indexOf(array, item, startIndex) {
   return -1;
 }
 
-
 function lastIndexOf(array, item, startIndex) {
   for (var index = startIndex || array.length - 1; index >= 0; index--) {
     if (array[index] === item) {
@@ -29,18 +26,15 @@ function lastIndexOf(array, item, startIndex) {
   return -1;
 }
 
-
 function remove(array, item) {
   var index = indexOf(array, item);
   return index !== -1 ? pop(array, index) : null;
 }
 
-
 function removeLast(array, item) {
   var index = lastIndexOf(array, item);
   return index !== -1 ? pop(array, index) : null;
 }
-
 
 function changeTagName(element, tagName) {
   if (element.tagName === tagName.toUpperCase()) {
@@ -68,7 +62,6 @@ function changeTagName(element, tagName) {
 
   return newElement;
 }
-
 
 module.exports = {
   forEach: forEach,

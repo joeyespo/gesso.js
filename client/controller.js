@@ -1,6 +1,5 @@
 var lowLevel = require('./lowLevel');
 
-
 function Controller(gesso, canvas) {
   this.gesso = gesso;
   this.canvas = canvas || lowLevel.getCanvas();
@@ -45,6 +44,5 @@ Controller.prototype.stop = function stop() {
   this._requestId = null;
   this.gesso.stop.invoke();
 };
-
 
 module.exports = Controller;

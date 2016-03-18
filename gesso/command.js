@@ -6,7 +6,6 @@ var bundler = require('./bundler');
 var server = require('./server');
 var pkg = require('../package');
 
-
 // CLI documentation and options
 var doc = [
   'Usage:',
@@ -30,7 +29,6 @@ var doc = [
   '    --no-index          Does not create dist/index.html'
 ].join('\n');
 
-
 function exitWithHelp(showVersion, localVersion) {
   if (showVersion) {
     if (localVersion) {
@@ -45,7 +43,6 @@ function exitWithHelp(showVersion, localVersion) {
   }
   process.exit(0);
 }
-
 
 function processArguments(argv, localVersion) {
   var args = {help: false};
@@ -62,7 +59,6 @@ function processArguments(argv, localVersion) {
   }
   return options;
 }
-
 
 function main(argv, modulePackage) {
   var options = processArguments(argv, modulePackage.version);
@@ -98,7 +94,6 @@ function main(argv, modulePackage) {
   }
 }
 
-
 function packagelessMain(argv) {
   var options = processArguments(argv, null);
   var command = options['<command>'];
@@ -127,7 +122,6 @@ function packagelessMain(argv) {
   process.exit(1);
 }
 
-
 function globalMain(argv) {
   new Liftoff({
     name: 'gesso'
@@ -141,7 +135,6 @@ function globalMain(argv) {
     }
   });
 }
-
 
 module.exports = {
   main: main,

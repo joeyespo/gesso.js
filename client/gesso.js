@@ -5,7 +5,6 @@ var Delegate = require('./delegate');
 var lowLevel = require('./lowLevel');
 var logging = require('./logging');
 
-
 function pointerHandlerWrapper(gesso, canvas, handler) {
   return function (e) {
     e.preventDefault();
@@ -23,7 +22,6 @@ function pointerHandlerWrapper(gesso, canvas, handler) {
   };
 }
 
-
 function keyHandlerWrapper(handler) {
   return function (e) {
     var handled = handler({which: e.which, e: e});
@@ -34,7 +32,6 @@ function keyHandlerWrapper(handler) {
     }
   };
 }
-
 
 function Gesso(options) {
   options = options || {};
@@ -148,6 +145,5 @@ Gesso.prototype.param = function param(name) {
   }
   return this.queryVariables[name];
 };
-
 
 module.exports = Gesso;

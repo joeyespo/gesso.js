@@ -3,10 +3,8 @@
 var raf = require('./vendor/raf');
 var util = require('./util');
 
-
 // Global polyfills
 require('./vendor/hand.min.1.3.8');
-
 
 // TODO: Find a better way to do this
 var getScriptUrl = (function () {
@@ -15,7 +13,6 @@ var getScriptUrl = (function () {
   var thisScript = scripts[index];
   return function () { return thisScript.src; };
 })();
-
 
 function getQueryVariables() {
   var pl = /\+/g;  // Regex for replacing addition symbol with a space
@@ -35,16 +32,13 @@ function getQueryVariables() {
   }
 }
 
-
 function getRootElement() {
   return document;
 }
 
-
 function isRootContainer(target) {
   return target === document || target === document.body;
 }
-
 
 function getCanvas() {
   // TODO: Extract this out to break dependency
@@ -76,16 +70,13 @@ function getCanvas() {
   return canvas;
 }
 
-
 function getContext2D() {
   return getCanvas().getContext('2d');
 }
 
-
 function getWebGLContext() {
   return getCanvas().getContext('webgl');
 }
-
 
 module.exports = {
   requestAnimationFrame: raf.requestAnimationFrame,

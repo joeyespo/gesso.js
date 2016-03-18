@@ -2,7 +2,6 @@ var path = require('path');
 var chalk = require('chalk');
 var chokidar = require('chokidar');
 
-
 function Watcher(builder) {
   this.builder = builder;
   this.path = builder.path;
@@ -82,7 +81,6 @@ Watcher.prototype.watch = function() {
   // Show watching for the first time
   self._watching();
 };
-
 
 module.exports = {
   Watcher: Watcher

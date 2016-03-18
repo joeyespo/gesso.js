@@ -1,6 +1,5 @@
 var util = require('util');
 
-
 var settings = {
   DEBUG: process.env.DEBUG === 'true',
   HOST: process.env.HOST || 'localhost',
@@ -10,13 +9,11 @@ var settings = {
   CANVAS_HEIGHT: process.env.CANVAS_HEIGHT ? parseInt(process.env.CANVAS_HEIGHT, 10) : 480
 };
 
-
 // Optionally merge with local settings
 try {
   util._extend(settings, require('./settings-local'));
 }
 catch (e) {
 }
-
 
 module.exports = settings;

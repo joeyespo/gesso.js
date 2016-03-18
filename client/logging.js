@@ -1,7 +1,6 @@
 // TODO: Logger class
 // TODO: Pluggable log backend, e.g. console.log
 
-
 // http://stackoverflow.com/questions/6418220/javascript-send-json-object-with-ajax
 // http://stackoverflow.com/questions/9713058/sending-post-data-with-a-xmlhttprequest
 // http://stackoverflow.com/questions/332872/encode-url-in-javascript
@@ -25,26 +24,21 @@ function _send(level, args) {
   xhr.send(payload);
 }
 
-
 function error(message) {
   return _send('error', Array.prototype.slice.call(arguments));
 }
-
 
 function info(message) {
   return _send('info', Array.prototype.slice.call(arguments));
 }
 
-
 function log(message) {
   return _send('log', Array.prototype.slice.call(arguments));
 }
 
-
 function warn(message) {
   return _send('warn', Array.prototype.slice.call(arguments));
 }
-
 
 module.exports = {
   error: error,

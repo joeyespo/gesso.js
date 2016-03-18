@@ -13,11 +13,9 @@ var utils = require('./utils');
 var Builder = builder.Builder;
 var Watcher = watcher.Watcher;
 
-
 function scriptFile(builder) {
   return (builder.projectName || builder.DEFAULT_PROJECT_NAME) + '.js';
 }
-
 
 function createApp(builder, logAll) {
   // Express application
@@ -113,7 +111,6 @@ function createApp(builder, logAll) {
   return app;
 }
 
-
 function serve(options) {
   options = options || {};
 
@@ -139,7 +136,6 @@ function serve(options) {
 
   return app;
 }
-
 
 module.exports = {
   createApp: createApp,

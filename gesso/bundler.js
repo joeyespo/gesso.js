@@ -6,15 +6,12 @@ var builder = require('./builder');
 var settings = require('./settings');
 var Builder = builder.Builder;
 
-
 var DEFAULT_OUTPUT_DIRECTORY = 'dist';
 var DEFAULT_PROJECT_NAME = builder.DEFAULT_PROJECT_NAME;
-
 
 function _callback(callback, err) {
   return (typeof callback === 'function') ? callback(err) : null;
 }
-
 
 function _error(callback, err, header) {
   if (err) {
@@ -22,7 +19,6 @@ function _error(callback, err, header) {
   }
   return _callback(callback, err);
 }
-
 
 function mkdirs(dir, callback) {
   // Get list of directories to make, keeping track of the current directory
@@ -54,7 +50,6 @@ function mkdirs(dir, callback) {
   }
   return mkdirsInner(dirnames, currentPath, callback);
 }
-
 
 function bundle(options, callback) {
   options = options || {};
@@ -124,7 +119,6 @@ function bundle(options, callback) {
     });
   });
 }
-
 
 module.exports = {
   bundle: bundle
