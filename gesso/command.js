@@ -2,7 +2,7 @@ var docopt = require('docopt');
 var Liftoff = require('liftoff');
 var tildify = require('tildify');
 var chalk = require('chalk');
-var bundler  = require('./bundler');
+var bundler = require('./bundler');
 var server = require('./server');
 var pkg = require('../package');
 
