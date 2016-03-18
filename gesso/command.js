@@ -146,5 +146,5 @@ function globalMain(argv) {
 module.exports = {
   main: main,
   packagelessMain: packagelessMain,
-  globalMain: globalMain,
+  globalMain: globalMain
 };
