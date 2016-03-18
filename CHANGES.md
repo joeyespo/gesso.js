@@ -2,6 +2,24 @@ Gesso Changelog
 ===============
 
 
+Version 0.13.0 (2016-03-18)
+---------------------------
+
+- Enhancement: Expose URL parameters with `Gesso.param('<name>')`
+- Enhancement: Add viewport to server's client for mobile testing
+- Enhancement: Add `max-width: 100%` to canvas for resize testing
+- Enhancement: Add `pointerdown`, `pointermove`, and `pointerup` for unifying mouse and touch events (use hand.js polyfill for cross-browser support)
+- Enhancement: Add `keydown` and `keyup` for basic keyboard input
+- Enhancement: Send CLI errors to `stderr` instead of `stdout`
+- Bugfix: Move `Gesso.asset` method to protocol
+- Bugfix: Prevent keyboard default only when no other DOM element is focused
+- Bugfix: Explicitly check for `window` global in RAF
+- Bugfix: Remove unused `bower` dependency from `package.json`
+- Cleanup: Move remaining vendor file, `raf.js`, to vendor subdirectory
+- Cleanup: Use JavaScript convention of only one newline between top-level functions
+- License: Update license to 2016
+
+
 Version 0.12.0 (2015-09-12)
 ---------------------------
 
