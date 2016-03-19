@@ -18,7 +18,7 @@ Gesso is a command-line tool that:
 Gesso also includes an optional base library, and a plugin system to handle
 ambitious canvas projects.
 
-![Teaser](artwork/teaser.png)
+![Screenshot](screenshot.png)
 
 
 Why?
