@@ -14,7 +14,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "http://github.com/gessojs/gessojs.git"
+    "url": "http://github.com/gessojs/gesso.js.git"
   },
   "engines": {
     "node": ">= 0.10.0"
